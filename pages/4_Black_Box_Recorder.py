@@ -11,20 +11,20 @@ with open("data/scenarios.json") as f:
 st.title("Decision Provenance Log")
 st.caption("Black Box Recorder for Cognitive Intelligence™ — forensic testimony for every governance decision")
 
+color_map = {
+    "ALLOW":   "#16a34a",
+    "HOLD":    "#f59e0b",
+    "ESCALATE":"#ea580c",
+    "BLOCK":   "#dc2626"
+}
+
 base_time = datetime.utcnow()
 
 for idx, action in enumerate(actions):
     evaluation = evaluate_action(action)
     event_time = base_time - timedelta(minutes=(idx * 7))
     counterparty = action.get("counterparty", action.get("vendor_name", "—"))
-
     decision = evaluation["decision"]
-    color_map = {
-        "ALLOW": "#16a34a",
-        "HOLD": "#f59e0b",
-        "ESCALATE": "#ea580c",
-        "BLOCK": "#dc2626"
-    }
     color = color_map.get(decision, "#64748b")
 
     with st.expander(f"{action['id']} — {counterparty} — {decision}"):
@@ -38,17 +38,10 @@ for idx, action in enumerate(actions):
 
         with col_b:
             st.markdown(
-                f"""
-                <div style="
-                    background:{color};
-                    padding:12px;
-                    border-radius:10px;
-                    text-align:center;
-                ">
-                    <div style="color:white; font-weight:700; font-size:1rem;">{decision}</div>
-                    <div style="color:white; font-size:0.8rem;">Score: {evaluation['risk_score']}</div>
-                </div>
-                """,
+                f'<div style="background:{color};padding:12px;border-radius:10px;text-align:center;">'
+                f'<div style="color:white;font-weight:700;font-size:1rem;">{decision}</div>'
+                f'<div style="color:white;font-size:0.8rem;">Score: {evaluation["risk_score"]}</div>'
+                f'</div>',
                 unsafe_allow_html=True
             )
 

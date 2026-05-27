@@ -161,18 +161,10 @@ for action, evaluation in zip(actions, evaluations):
 
         with col_b:
             st.markdown(
-                f"""
-                <div style="
-                    background:{color};
-                    padding:16px;
-                    border-radius:12px;
-                    text-align:center;
-                    margin-bottom:12px;
-                ">
-                    <div style="color:white; font-weight:700; font-size:1.1rem;">{decision}</div>
-                    <div style="color:rgba(255,255,255,0.85); font-size:0.85rem;">Risk Score: {evaluation['risk_score']}</div>
-                </div>
-                """,
+                f'<div style="background:{color};padding:16px;border-radius:12px;text-align:center;margin-bottom:12px;">'
+                f'<div style="color:white;font-weight:700;font-size:1.1rem;">{decision}</div>'
+                f'<div style="color:rgba(255,255,255,0.85);font-size:0.85rem;">Risk Score: {evaluation["risk_score"]}</div>'
+                f'</div>',
                 unsafe_allow_html=True
             )
 

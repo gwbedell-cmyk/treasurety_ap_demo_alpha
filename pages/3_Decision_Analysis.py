@@ -48,25 +48,14 @@ with col_a:
 
 with col_b:
     st.markdown("**Authority Context**")
-    st.markdown(f"""
-<div style="
-    background: #1e293b;
-    padding: 16px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    color: #94a3b8;
-">
-    <div style="margin-bottom: 6px;">
-        <span style="color: #60a5fa; font-weight: 600;">Delegated Scope:</span> Single-action authorization
-    </div>
-    <div style="margin-bottom: 6px;">
-        <span style="color: #60a5fa; font-weight: 600;">Policy Source:</span> Enterprise Governance Ruleset v2
-    </div>
-    <div>
-        <span style="color: #60a5fa; font-weight: 600;">Authority Chain:</span> Agent → Operator → Policy Engine
-    </div>
-</div>
-""", unsafe_allow_html=True)
+    st.markdown(
+        '<div style="background:#1e293b;padding:16px;border-radius:12px;font-size:0.85rem;color:#94a3b8;">'
+        '<div style="margin-bottom:6px;"><span style="color:#60a5fa;font-weight:600;">Delegated Scope:</span> Single-action authorization</div>'
+        '<div style="margin-bottom:6px;"><span style="color:#60a5fa;font-weight:600;">Policy Source:</span> Enterprise Governance Ruleset v2</div>'
+        '<div><span style="color:#60a5fa;font-weight:600;">Authority Chain:</span> Agent → Operator → Policy Engine</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
 st.markdown("---")
 
@@ -86,18 +75,10 @@ trust_col = st.columns([1, 1])
 
 with trust_col[0]:
     st.markdown(
-        f"""
-        <div style="
-            background:{color};
-            padding:24px;
-            border-radius:16px;
-            text-align:center;
-            border:1px solid rgba(255,255,255,0.1);
-        ">
-            <h2 style="color:white; margin-bottom:8px;">{evaluation['decision']}</h2>
-            <h3 style="color:white; margin:0;">Risk Score: {evaluation['risk_score']}</h3>
-        </div>
-        """,
+        f'<div style="background:{color};padding:24px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,0.1);">'
+        f'<h2 style="color:white;margin-bottom:8px;">{evaluation["decision"]}</h2>'
+        f'<h3 style="color:white;margin:0;">Risk Score: {evaluation["risk_score"]}</h3>'
+        f'</div>',
         unsafe_allow_html=True
     )
 
@@ -130,18 +111,10 @@ button_col = st.columns([1, 1, 1, 4])
 risk = evaluation["risk_score"]
 
 with button_col[0]:
-    execute_clicked = False
-    if risk >= 70:
-        execute_clicked = st.button("Override")
-    else:
-        execute_clicked = st.button("Authorize")
+    execute_clicked = st.button("Override") if risk >= 70 else st.button("Authorize")
 
 with button_col[1]:
-    hold_clicked = False
-    if risk >= 70:
-        hold_clicked = st.button("Escalate")
-    else:
-        hold_clicked = st.button("Hold")
+    hold_clicked = st.button("Escalate") if risk >= 70 else st.button("Hold")
 
 with button_col[2]:
     third_clicked = False
@@ -154,35 +127,21 @@ alert_col = st.columns([1, 1])
 
 with alert_col[0]:
     if execute_clicked:
-        if risk >= 70:
-            st.warning("Override pathway initiated. Decision provenance logged.")
-        else:
-            st.success("Execution authorized.")
-
+        st.warning("Override pathway initiated. Decision provenance logged.") if risk >= 70 else st.success("Execution authorized.")
     if hold_clicked:
-        if risk >= 70:
-            st.warning("Action escalated for human review.")
-        else:
-            st.warning("Execution placed on hold.")
-
+        st.warning("Action escalated for human review.") if risk >= 70 else st.warning("Execution placed on hold.")
     if third_clicked:
-        if risk >= 70:
-            st.error("Execution blocked.")
-        else:
-            st.warning("Action escalated for human review.")
+        st.error("Execution blocked.") if risk >= 70 else st.warning("Action escalated for human review.")
 
 st.markdown("---")
 
 st.subheader("Human Intervention — Authority Override")
 
-override_reason = st.text_area(
-    "Business justification required for governance override"
-)
+override_reason = st.text_area("Business justification required for governance override")
 
 if st.button("Record Override Decision"):
     if override_reason.strip():
         log = load_audit_log()
-
         log.append({
             "timestamp": datetime.utcnow().isoformat(),
             "action_id": selected["id"],
@@ -193,9 +152,7 @@ if st.button("Record Override Decision"):
             "triggered_policies": evaluation["triggered_policies"],
             "findings": [override_reason]
         })
-
         save_audit_log(log)
-
         st.success("Override recorded in Decision Provenance Log.")
     else:
         st.error("Override justification required.")

@@ -161,18 +161,10 @@ with tab1:
         st.subheader("Governance Trust Evaluation")
 
         st.markdown(
-            f"""
-            <div style="
-                background:{color};
-                padding:20px;
-                border-radius:16px;
-                color:white;
-                text-align:center;
-            ">
-                <h2>{decision}</h2>
-                <h3>Risk Score: {risk_score}</h3>
-            </div>
-            """,
+            f'<div style="background:{color};padding:20px;border-radius:16px;color:white;text-align:center;">'
+            f'<h2>{decision}</h2>'
+            f'<h3>Risk Score: {risk_score}</h3>'
+            f'</div>',
             unsafe_allow_html=True
         )
 
@@ -228,18 +220,10 @@ with tab2:
 
                 with col_b:
                     st.markdown(
-                        f"""
-                        <div style="
-                            background:{color};
-                            padding:16px;
-                            border-radius:12px;
-                            color:white;
-                            text-align:center;
-                        ">
-                            <h3 style="margin-bottom:6px;">{evaluation['decision']}</h3>
-                            <div style="font-size:0.9rem;">Risk Score: {evaluation['risk_score']}</div>
-                        </div>
-                        """,
+                        f'<div style="background:{color};padding:16px;border-radius:12px;color:white;text-align:center;">'
+                        f'<h3 style="margin-bottom:6px;">{evaluation["decision"]}</h3>'
+                        f'<div style="font-size:0.9rem;">Risk Score: {evaluation["risk_score"]}</div>'
+                        f'</div>',
                         unsafe_allow_html=True
                     )
 
