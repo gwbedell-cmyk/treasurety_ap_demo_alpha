@@ -1,0 +1,71 @@
+section.main > div {
+    background-color: #f8fafc;
+}
+
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    max-width: 1500px;
+}
+
+/* MAIN CONTENT TEXT */
+h1 {
+    color: #0f172a;
+    font-size: 2.3rem;
+    font-weight: 700;
+}
+
+h2, h3 {
+    color: #1e293b;
+}
+
+p, div, span, label {
+    color: #111827 !important;
+}
+
+small {
+    color: #475569 !important;
+}
+
+/* METRIC CARDS */
+[data-testid="stMetric"] {
+    background: linear-gradient(
+        145deg,
+        rgba(15,23,42,0.98),
+        rgba(30,41,59,0.95)
+    );
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+/* METRIC TEXT */
+[data-testid="stMetric"] label,
+[data-testid="stMetric"] div,
+[data-testid="stMetric"] span {
+    color: #ffffff !important;
+}
+
+/* SIDEBAR */
+[data-testid="stSidebar"] {
+    background-color: #0f172a;
+}
+
+/* SIDEBAR TEXT */
+[data-testid="stSidebar"] * {
+    color: white !important;
+}
+
+.stDataFrame {
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+hr {
+    border-color: rgba(15,23,42,0.08);
+}
+
+.stAlert {
+    border-radius: 14px;
+}

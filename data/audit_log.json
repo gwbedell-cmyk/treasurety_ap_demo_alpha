@@ -1,0 +1,109 @@
+[
+  {
+    "timestamp": "2026-05-14T09:14:22Z",
+    "action_id": "ACT-091",
+    "agent_id": "AEX-091",
+    "counterparty": "Northshore Logistics",
+    "decision": "ALLOW",
+    "risk_score": 10,
+    "triggered_policies": [],
+    "findings": []
+  },
+  {
+    "timestamp": "2026-05-14T09:41:07Z",
+    "action_id": "ACT-092",
+    "agent_id": "AEX-092",
+    "counterparty": "Acme Industrial Supply",
+    "decision": "HOLD",
+    "risk_score": 50,
+    "triggered_policies": [
+      "P-19 Authority Chain Completeness"
+    ],
+    "findings": [
+      "Authority chain incomplete — execution not fully delegated"
+    ]
+  },
+  {
+    "timestamp": "2026-05-14T10:03:54Z",
+    "action_id": "ACT-093",
+    "agent_id": "AEX-093",
+    "counterparty": "Global Precision Parts",
+    "decision": "ESCALATE",
+    "risk_score": 75,
+    "triggered_policies": [
+      "P-12 Counterparty Change Risk",
+      "P-42 Counterparty Risk Escalation"
+    ],
+    "findings": [
+      "Counterparty destination details changed within trust window",
+      "Elevated counterparty trust signal"
+    ]
+  },
+  {
+    "timestamp": "2026-05-14T10:28:31Z",
+    "action_id": "ACT-094",
+    "agent_id": "AEX-094",
+    "counterparty": "Cloud Infrastructure Partners",
+    "decision": "ALLOW",
+    "risk_score": 15,
+    "triggered_policies": [],
+    "findings": []
+  },
+  {
+    "timestamp": "2026-05-14T11:07:18Z",
+    "action_id": "ACT-095",
+    "agent_id": "AEX-095",
+    "counterparty": "Rapid Medical Supply",
+    "decision": "HOLD",
+    "risk_score": 45,
+    "triggered_policies": [
+      "P-19 Authority Chain Completeness"
+    ],
+    "findings": [
+      "Authority chain incomplete — execution not fully delegated"
+    ]
+  },
+  {
+    "timestamp": "2026-05-14T11:52:42Z",
+    "action_id": "ACT-096",
+    "agent_id": "AEX-096",
+    "counterparty": "Treasury Liquidity Partner",
+    "decision": "BLOCK",
+    "risk_score": 105,
+    "triggered_policies": [
+      "P-12 Counterparty Change Risk",
+      "P-19 Authority Chain Completeness",
+      "P-42 Counterparty Risk Escalation"
+    ],
+    "findings": [
+      "Counterparty destination details changed within trust window",
+      "Authority chain incomplete — execution not fully delegated",
+      "Elevated counterparty trust signal",
+      "Blocked due to policy boundary breach."
+    ]
+  },
+  {
+    "timestamp": "2026-05-14T12:36:55Z",
+    "action_id": "ACT-097",
+    "agent_id": "AEX-097",
+    "counterparty": "Euro Manufacturing GmbH",
+    "decision": "ALLOW",
+    "risk_score": 12,
+    "triggered_policies": [],
+    "findings": []
+  },
+  {
+    "timestamp": "2026-05-14T13:11:23Z",
+    "action_id": "ACT-098",
+    "agent_id": "AEX-098",
+    "counterparty": "Executive Travel Services",
+    "decision": "HUMAN OVERRIDE",
+    "risk_score": 40,
+    "triggered_policies": [
+      "P-19 Authority Chain Completeness"
+    ],
+    "findings": [
+      "CEO travel reimbursement exception approved by human authority."
+    ]
+  }
+]

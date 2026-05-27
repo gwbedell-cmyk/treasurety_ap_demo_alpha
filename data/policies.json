@@ -1,0 +1,142 @@
+[
+  {
+    "id": "P-01",
+    "name": "Duplicate Submission Detection",
+    "description": "Prevents duplicate action submission or replay execution by an autonomous agent.",
+    "weight": 35,
+    "enabled": true
+  },
+  {
+    "id": "P-02",
+    "name": "Execution Scope Boundary Enforcement",
+    "description": "Blocks actions exceeding the agent's configured autonomous authority limits.",
+    "weight": 25,
+    "enabled": true
+  },
+  {
+    "id": "P-03",
+    "name": "Action Category Compliance Validation",
+    "description": "Checks proposed actions against approved execution categories.",
+    "weight": 15,
+    "enabled": false
+  },
+  {
+    "id": "P-04",
+    "name": "Counterparty Trust Validation",
+    "description": "Restricts autonomous execution to verified, trusted counterparties.",
+    "weight": 20,
+    "enabled": true
+  },
+  {
+    "id": "P-05",
+    "name": "Counterparty Destination Change Hold",
+    "description": "Triggers governance review when execution destination is modified.",
+    "weight": 30,
+    "enabled": true
+  },
+  {
+    "id": "P-06",
+    "name": "Dynamic Counterparty Trust Scoring",
+    "description": "Continuously evaluates counterparty risk signals before execution.",
+    "weight": 20,
+    "enabled": false
+  },
+  {
+    "id": "P-07",
+    "name": "Execution Exposure Threshold",
+    "description": "Requires escalation above authority-defined exposure limits.",
+    "weight": 25,
+    "enabled": true
+  },
+  {
+    "id": "P-08",
+    "name": "Pre-Execution Dependency Health Check",
+    "description": "Confirms downstream system availability before action release.",
+    "weight": 20,
+    "enabled": false
+  },
+  {
+    "id": "P-09",
+    "name": "Cross-Jurisdiction Execution Review",
+    "description": "Applies heightened governance for actions spanning jurisdictions.",
+    "weight": 30,
+    "enabled": true
+  },
+  {
+    "id": "P-10",
+    "name": "Segregation of Duties Enforcement",
+    "description": "Prevents fully autonomous end-to-end execution without separation controls.",
+    "weight": 25,
+    "enabled": true
+  },
+  {
+    "id": "P-11",
+    "name": "Override Audit Logging",
+    "description": "Captures all governance overrides in the Decision Provenance Log.",
+    "weight": 10,
+    "enabled": true
+  },
+  {
+    "id": "P-12",
+    "name": "Real-Time Governance Intervention",
+    "description": "Allows immediate interruption of autonomous actions in-flight.",
+    "weight": 25,
+    "enabled": true
+  },
+  {
+    "id": "P-13",
+    "name": "Execution Timing Anomaly Detection",
+    "description": "Flags unusual execution timing relative to agent operating norms.",
+    "weight": 15,
+    "enabled": true
+  },
+  {
+    "id": "P-14",
+    "name": "AI Confidence Auto-Release",
+    "description": "Permits autonomous release when agent confidence exceeds threshold and risk is low.",
+    "weight": 15,
+    "enabled": false
+  },
+  {
+    "id": "P-15",
+    "name": "High-Risk Jurisdiction Review",
+    "description": "Applies jurisdiction-based risk governance to execution routing.",
+    "weight": 20,
+    "enabled": true
+  },
+  {
+    "id": "P-16",
+    "name": "Exception Escalation Pathway",
+    "description": "Routes execution exceptions for human authorization.",
+    "weight": 20,
+    "enabled": true
+  },
+  {
+    "id": "P-17",
+    "name": "Emergency Execution Fast-Track",
+    "description": "Controlled expedited execution pathway for exceptional circumstances.",
+    "weight": 10,
+    "enabled": false
+  },
+  {
+    "id": "P-18",
+    "name": "Off-Hours Execution Restriction",
+    "description": "Blocks execution during restricted operational windows.",
+    "weight": 15,
+    "enabled": true
+  },
+  {
+    "id": "P-19",
+    "name": "Authority Chain Pre-Approval",
+    "description": "Requires full authority chain validation before execution proceeds.",
+    "weight": 20,
+    "enabled": false
+  },
+  {
+    "id": "P-20",
+    "name": "Contract Compliance Validation",
+    "description": "Checks execution against contractual scope and obligations.",
+    "weight": 15,
+    "enabled": false
+  }
+]

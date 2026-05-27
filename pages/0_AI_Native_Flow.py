@@ -1,0 +1,196 @@
+import streamlit as st
+import json
+from services.evaluator import evaluate_action
+from services.ui_helpers import decision_color
+
+st.set_page_config(layout="wide")
+
+def load_css():
+    with open("assets/css.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
+
+with open("data/scenarios.json") as f:
+    actions = json.load(f)
+
+# Artifact → scenario mapping (financial proving environment)
+scenario_map = {
+    "Invoice_ACME_Approved_18K.pdf": "ACT-002",
+    "Invoice_Duplicate_125K.pdf": "ACT-001",
+    "Vendor_Bank_Update_Request.pdf": "ACT-003",
+    "Treasury_Transfer_Exception.csv": "ACT-008",
+    "Contract_Approval_Request.pdf": "ACT-011"
+}
+
+artifact_metadata = {
+    "Invoice_ACME_Approved_18K.pdf": {
+        "counterparty": "ACME Industrial",
+        "amount": "$18,000",
+        "objective": "Payment Authorization Request"
+    },
+    "Invoice_Duplicate_125K.pdf": {
+        "counterparty": "Global Supply Corp",
+        "amount": "$125,000",
+        "objective": "Payment Authorization Request"
+    },
+    "Vendor_Bank_Update_Request.pdf": {
+        "counterparty": "NorthBridge Logistics",
+        "amount": "$92,000",
+        "objective": "Counterparty Record Update"
+    },
+    "Treasury_Transfer_Exception.csv": {
+        "counterparty": "Treasury Operations",
+        "amount": "$250,000",
+        "objective": "Off-Hours Treasury Transfer"
+    },
+    "Contract_Approval_Request.pdf": {
+        "counterparty": "Meridian Consulting Group",
+        "amount": "$240,000",
+        "objective": "Contract Approval Request"
+    }
+}
+
+st.title("Governance Flow")
+st.caption("Enterprise context enters. AI agent proposes. Treasurety governs.")
+
+st.markdown("""
+<div style="
+    background: #0f172a;
+    border-left: 4px solid #3b82f6;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+">
+    <strong style="color: #60a5fa;">Financial Proving Environment</strong> —
+    demonstrating Treasurety governance runtime on autonomous financial execution.
+    The same runtime governs any autonomous execution domain.
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.subheader("Select an Artifact to Ingest")
+
+artifact_box_style = """
+<style>
+div.stButton > button {
+    background-color: #e6f2ff !important;
+    border: 1px solid #b3d9ff !important;
+    color: #0f2744 !important;
+    border-radius: 12px !important;
+    min-height: 90px !important;
+    white-space: normal !important;
+    font-weight: 600 !important;
+}
+</style>
+"""
+
+st.markdown(artifact_box_style, unsafe_allow_html=True)
+
+col1, col2, col3, col4, col5 = st.columns(5)
+
+selected_artifact = None
+
+with col1:
+    if st.button("📄 Invoice_ACME_Approved_18K.pdf"):
+        selected_artifact = "Invoice_ACME_Approved_18K.pdf"
+
+with col2:
+    if st.button("📄 Invoice_Duplicate_125K.pdf"):
+        selected_artifact = "Invoice_Duplicate_125K.pdf"
+
+with col3:
+    if st.button("📄 Vendor_Bank_Update_Request.pdf"):
+        selected_artifact = "Vendor_Bank_Update_Request.pdf"
+
+with col4:
+    if st.button("📊 Treasury_Transfer_Exception.csv"):
+        selected_artifact = "Treasury_Transfer_Exception.csv"
+
+with col5:
+    if st.button("📄 Contract_Approval_Request.pdf"):
+        selected_artifact = "Contract_Approval_Request.pdf"
+
+st.markdown("---")
+
+st.file_uploader(
+    "Production artifact ingestion interface",
+    disabled=True
+)
+
+if selected_artifact:
+    selected_id = scenario_map[selected_artifact]
+
+    proposed = next(
+        a for a in actions
+        if a["id"] == selected_id
+    )
+
+    evaluation = evaluate_action(proposed)
+    color = decision_color(evaluation["decision"])
+    artifact = artifact_metadata[selected_artifact]
+    counterparty = proposed.get("counterparty", proposed.get("vendor_name", "—"))
+
+    st.success(f"Artifact ingested: {selected_artifact}")
+
+    st.markdown("---")
+
+    st.subheader("Structured Extraction")
+
+    st.write(f"**Counterparty:** {artifact['counterparty']}")
+    st.write(f"**Scope Value:** {artifact['amount']}")
+    st.write(f"**AI Proposed Objective:** {artifact['objective']}")
+
+    st.markdown("---")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Proposed Autonomous Action")
+        st.write(f"**Action Type:** {proposed['action_type']}")
+        st.write(f"**Counterparty:** {counterparty}")
+        if proposed["amount"] > 0:
+            st.write(f"**Scope Value:** ${proposed['amount']:,.0f}")
+        st.write(f"**Agent Confidence:** {int(proposed['confidence'] * 100)}%")
+        st.write(f"**Agent ID:** {proposed['agent_id']}")
+
+    with col2:
+        st.markdown("### Governance Trust Evaluation")
+
+        st.markdown(
+            f"""
+            <div style="
+                background:{color};
+                padding:20px;
+                border-radius:16px;
+                color:white;
+                text-align:center;
+            ">
+                <h2 style="margin-bottom:8px;">{evaluation['decision']}</h2>
+                <h3 style="margin:0;">Risk Score: {evaluation['risk_score']}</h3>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.markdown("---")
+
+    st.subheader("Execution Risk Signals")
+
+    if evaluation["explanations"]:
+        for finding in evaluation["explanations"]:
+            st.write(f"• {finding}")
+    else:
+        st.success("No execution risk signals detected.")
+
+    st.markdown("---")
+
+    if evaluation["risk_score"] <= 25:
+        if st.button("Authorize Execution"):
+            st.success("Execution authorized by Treasurety governance runtime.")
+    else:
+        if st.button("Escalate to Governance Control Plane"):
+            st.success("Proposed action escalated to governance control plane.")
