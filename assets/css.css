@@ -1,71 +1,145 @@
-section.main > div {
-    background-color: #f8fafc;
+/* ── BASE — dark mission control theme ───────────────────────────────── */
+.stApp,
+section.main > div,
+[data-testid="stAppViewContainer"] {
+    background-color: #060d1a;
 }
 
 .block-container {
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
     max-width: 1500px;
 }
 
-/* MAIN CONTENT TEXT */
+/* ── GLOBAL TEXT — light on dark ─────────────────────────────────────── */
 h1 {
-    color: #0f172a;
+    color: #f1f5f9 !important;
     font-size: 2.3rem;
     font-weight: 700;
 }
 
 h2, h3 {
-    color: #1e293b;
+    color: #e2e8f0 !important;
 }
 
-p, div, span, label {
-    color: #111827 !important;
+p, li, .stMarkdown p {
+    color: #94a3b8 !important;
 }
 
-small {
-    color: #475569 !important;
+/* override Streamlit's default dark-on-light body text */
+.stApp p,
+.stApp div,
+.stApp span,
+.stApp label {
+    color: inherit;
 }
 
-/* METRIC CARDS */
+/* ── METRIC TILES ────────────────────────────────────────────────────── */
 [data-testid="stMetric"] {
     background: linear-gradient(
         145deg,
-        rgba(15,23,42,0.98),
-        rgba(30,41,59,0.95)
+        rgba(15, 23, 42, 0.98),
+        rgba(30, 41, 59, 0.95)
     );
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 18px;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    border: 1px solid rgba(99, 179, 237, 0.15);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* METRIC TEXT */
-[data-testid="stMetric"] label,
-[data-testid="stMetric"] div,
-[data-testid="stMetric"] span {
+/* label (metric name) */
+[data-testid="stMetric"] [data-testid="stMetricLabel"] p,
+[data-testid="stMetric"] [data-testid="stMetricLabel"] span,
+[data-testid="stMetric"] [data-testid="stMetricLabel"] div,
+[data-testid="stMetric"] [data-testid="stMetricLabel"] label {
+    color: #7dd3fc !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* value */
+[data-testid="stMetric"] [data-testid="stMetricValue"],
+[data-testid="stMetric"] [data-testid="stMetricValue"] * {
     color: #ffffff !important;
+    font-size: 1.9rem !important;
+    font-weight: 700 !important;
 }
 
-/* SIDEBAR */
+/* delta */
+[data-testid="stMetric"] [data-testid="stMetricDelta"],
+[data-testid="stMetric"] [data-testid="stMetricDelta"] * {
+    color: #94a3b8 !important;
+    font-size: 0.8rem !important;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────────────────── */
 [data-testid="stSidebar"] {
-    background-color: #0f172a;
+    background-color: #0a0f1e;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* SIDEBAR TEXT */
-[data-testid="stSidebar"] * {
-    color: white !important;
+[data-testid="stSidebar"] *,
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] div,
+[data-testid="stSidebar"] label {
+    color: #cbd5e1 !important;
 }
 
+/* ── EXPANDER ────────────────────────────────────────────────────────── */
+[data-testid="stExpander"] {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+}
+
+[data-testid="stExpander"] summary p,
+[data-testid="stExpander"] summary span {
+    color: #e2e8f0 !important;
+}
+
+/* ── DATAFRAME ───────────────────────────────────────────────────────── */
 .stDataFrame {
     border-radius: 14px;
     overflow: hidden;
 }
 
+/* ── DIVIDER ─────────────────────────────────────────────────────────── */
 hr {
-    border-color: rgba(15,23,42,0.08);
+    border-color: rgba(255, 255, 255, 0.07);
 }
 
+/* ── ALERTS / INFO ───────────────────────────────────────────────────── */
 .stAlert {
-    border-radius: 14px;
+    border-radius: 12px;
+}
+
+/* ── INPUTS / SELECT / TOGGLE ────────────────────────────────────────── */
+[data-testid="stSelectbox"] label,
+[data-testid="stSlider"] label,
+[data-testid="stTextArea"] label,
+[data-testid="stToggle"] label {
+    color: #cbd5e1 !important;
+}
+
+/* ── TABS ────────────────────────────────────────────────────────────── */
+[data-testid="stTabs"] [role="tab"] {
+    color: #94a3b8 !important;
+}
+
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+    color: #7dd3fc !important;
+    border-bottom-color: #7dd3fc !important;
+}
+
+/* ── WRITE / TEXT ────────────────────────────────────────────────────── */
+.stMarkdown, .stText {
+    color: #94a3b8;
+}
+
+/* ── CAPTION ─────────────────────────────────────────────────────────── */
+small, .stCaption, .stCaption * {
+    color: #475569 !important;
 }

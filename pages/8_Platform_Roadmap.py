@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
-st.title("Treasurety Platform")
+st.title("Platform Roadmap")
 st.caption("Trust infrastructure modules — governance runtime at every layer of autonomous execution")
 
 st.markdown("---")
