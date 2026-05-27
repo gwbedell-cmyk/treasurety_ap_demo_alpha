@@ -30,6 +30,13 @@ artifact_metadata = {
     "Contract_Approval_Request.pdf":  {"counterparty": "Meridian Consulting Group","amount": "$240,000", "objective": "Contract Approval Request"},
 }
 
+st.markdown(
+    '<div style="margin-bottom:4px;">'
+    '<span style="background:rgba(59,130,246,0.15);color:#7dd3fc;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 14px;border-radius:999px;border:1px solid rgba(59,130,246,0.3);">TREASURETY GOVERN™</span>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
 st.title("Governance Flow")
 st.caption("Enterprise context enters. AI agent proposes. Treasurety governs.")
 
@@ -46,7 +53,7 @@ st.markdown("---")
 st.subheader("Select an Artifact to Ingest")
 
 st.markdown(
-    '<style>div.stButton > button {background-color:#e6f2ff !important;border:1px solid #b3d9ff !important;color:#0f2744 !important;border-radius:12px !important;min-height:90px !important;white-space:normal !important;font-weight:600 !important;}</style>',
+    '<style>div.stButton > button {background:#1e3a5f !important;border:1px solid #3b82f6 !important;color:#7dd3fc !important;border-radius:12px !important;min-height:90px !important;white-space:normal !important;font-weight:600 !important;} div.stButton > button:hover {background:#1e4a7a !important;border-color:#60a5fa !important;}</style>',
     unsafe_allow_html=True
 )
 
@@ -101,11 +108,23 @@ if selected_artifact:
         st.write(f"**Agent ID:** {proposed['agent_id']}")
 
     with col2:
-        st.markdown("### Governance Trust Evaluation")
         st.markdown(
-            f'<div style="background:{color};padding:20px;border-radius:16px;color:white;text-align:center;">'
-            f'<h2 style="margin-bottom:8px;">{evaluation["decision"]}</h2>'
-            f'<h3 style="margin:0;">Risk Score: {evaluation["risk_score"]}</h3>'
+            '<div style="color:#7dd3fc;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Governance Trust Evaluation</div>',
+            unsafe_allow_html=True
+        )
+        desc_map = {
+            "ALLOW":    "Action within trusted execution bounds.",
+            "HOLD":     "Governance review required before execution.",
+            "ESCALATE": "Human authorization required.",
+            "BLOCK":    "Policy boundary breached. Execution denied.",
+        }
+        d = evaluation["decision"]
+        st.markdown(
+            f'<div style="background:{color};border-radius:16px;padding:24px 28px;text-align:center;">'
+            f'<div style="color:rgba(255,255,255,0.7);font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">GOVERNANCE DECISION</div>'
+            f'<div style="color:white;font-size:2rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;">{d}</div>'
+            f'<div style="color:rgba(255,255,255,0.85);font-size:0.88rem;">Risk Score: {evaluation["risk_score"]}/100</div>'
+            f'<div style="color:rgba(255,255,255,0.7);font-size:0.82rem;margin-top:6px;">{desc_map.get(d, "")}</div>'
             f'</div>',
             unsafe_allow_html=True
         )

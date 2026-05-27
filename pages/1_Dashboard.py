@@ -35,6 +35,13 @@ audit_log = load_audit_log()
 human_interventions = sum(1 for r in audit_log if r.get("decision") == "HUMAN OVERRIDE")
 policy_exceptions   = sum(1 for e in evaluations if len(e["triggered_policies"]) > 0)
 
+st.markdown(
+    '<div style="margin-bottom:4px;">'
+    '<span style="background:rgba(59,130,246,0.15);color:#7dd3fc;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 14px;border-radius:999px;border:1px solid rgba(59,130,246,0.3);">TREASURETY GOVERN™</span>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
 st.title("Governance Dashboard")
 st.caption("Treasurety runtime — live governance state across all proposed autonomous actions")
 
