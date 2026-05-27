@@ -40,14 +40,32 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ── SECOND ACTIVE MODULE ───────────────────────────────────────────────────────
+st.markdown(
+    '<div style="background:#0f172a;border:2px solid #3b82f6;padding:28px 32px;border-radius:16px;margin-bottom:12px;">'
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">'
+    '<div style="background:#3b82f6;color:white;font-weight:700;font-size:0.75rem;padding:3px 12px;border-radius:999px;">ACTIVE</div>'
+    '<h2 style="color:white;margin:0;">Treasurety Assess</h2>'
+    '</div>'
+    '<p style="color:#94a3b8;margin:0 0 12px 0;font-size:0.95rem;">Pre-deployment readiness and risk assurance for autonomous systems. Authority scope analysis, behavioral drift assessment, ecosystem exposure mapping, and operational governance scoring before deployment.</p>'
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;">'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Authority Scope Analysis</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Behavioral Drift Risk</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Ecosystem Exposure</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Ops Governance Scoring</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Deployment Verdict</span>'
+    '</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div style="text-align:center;color:#334155;font-size:1.4rem;margin:4px 0;">↓</div>',
+    unsafe_allow_html=True
+)
+
 # ── ROADMAP MODULES ───────────────────────────────────────────────────────────
 roadmap_modules = [
-    {
-        "name": "Treasurety Assess",
-        "tagline": "Pre-execution risk intelligence for autonomous actions.",
-        "description": "Deep counterparty assessment, contract compliance validation, and authority scope analysis before the action reaches the runtime. Assess reduces runtime load by surfacing risk earlier in the agent lifecycle.",
-        "tags": ["Counterparty Intelligence", "Contract Validation", "Pre-Flight Risk", "Scope Analysis"],
-    },
     {
         "name": "Treasurety Monitor",
         "tagline": "Continuous observability across all autonomous agent activity.",
