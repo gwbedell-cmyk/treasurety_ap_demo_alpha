@@ -1,6 +1,14 @@
 import streamlit as st
+from services import branding
 
 st.set_page_config(layout="wide")
+
+def load_css():
+    with open("assets/css.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+load_css()
+branding.sidebar_logo()
 
 st.title("Treasurety Runtime Architecture")
 st.caption("Trust infrastructure for autonomous execution — governance model")

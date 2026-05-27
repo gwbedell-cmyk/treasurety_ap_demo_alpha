@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 from services.evaluator import evaluate_action
+from services import branding
 
 st.set_page_config(layout="wide")
 
@@ -9,6 +10,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+branding.sidebar_logo()
 
 DECISION_COLORS = {
     "ALLOW":    "#16a34a",

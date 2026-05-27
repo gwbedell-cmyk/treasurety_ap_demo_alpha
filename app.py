@@ -1,8 +1,9 @@
 import streamlit as st
+from services import branding
 
 st.set_page_config(
     page_title="Treasurety",
-    page_icon="🛡️",
+    page_icon=branding.page_favicon(),
     layout="wide"
 )
 
@@ -11,16 +12,18 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+branding.sidebar_logo()
 
 # ── HERO ──────────────────────────────────────────────────────────────────────
+logo_tag = branding.logo_html(width=320, extra_style="margin:14px 0 6px 0;")
+
 st.markdown(
     '<div style="background:linear-gradient(135deg,#060d1a 0%,#0d1f3c 100%);border:1px solid rgba(59,130,246,0.25);border-radius:20px;padding:48px 52px;margin-bottom:28px;">'
-    '<div style="margin-bottom:12px;">'
+    '<div style="margin-bottom:4px;">'
     '<span style="background:rgba(59,130,246,0.15);color:#7dd3fc;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 14px;border-radius:999px;border:1px solid rgba(59,130,246,0.3);">GOVERNANCE RUNTIME ACTIVE</span>'
     '</div>'
-    '<h1 style="color:white;font-size:3rem;font-weight:800;margin:16px 0 6px 0;letter-spacing:-0.02em;line-height:1.1;">🛡️ Treasurety</h1>'
-    '<p style="color:#94a3b8;font-size:1.05rem;margin:0 0 24px 0;">Trust Infrastructure for Autonomous Execution</p>'
-    '<div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:22px;">'
+    + logo_tag +
+    '<div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:22px;margin-top:20px;">'
     '<p style="font-size:1.6rem;font-weight:700;color:#e2e8f0;margin:0 0 4px 0;line-height:1.3;">AI can think.</p>'
     '<p style="font-size:1.6rem;font-weight:700;color:#60a5fa;margin:0 0 14px 0;line-height:1.3;">Treasurety decides whether it gets to act.</p>'
     '<p style="color:#64748b;font-size:0.92rem;margin:0;max-width:640px;">Governance middleware for autonomous systems — the runtime layer that enforces bounded authority, verifies trust, and controls whether AI agents are permitted to execute.</p>'

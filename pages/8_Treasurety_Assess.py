@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 from datetime import datetime
+from services import branding
 
 st.set_page_config(layout="wide")
 
@@ -9,6 +10,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+branding.sidebar_logo()
 
 # ── SCORING ENGINE ────────────────────────────────────────────────────────────
 
@@ -203,6 +205,8 @@ init_state()
 
 
 # ── HEADER ────────────────────────────────────────────────────────────────────
+
+st.image("assets/logo.png", width=240)
 
 st.markdown(
     '<div style="margin-bottom:4px;">'

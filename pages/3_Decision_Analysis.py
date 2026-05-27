@@ -5,6 +5,7 @@ from datetime import datetime
 from services.evaluator import evaluate_action
 from services.audit import load_audit_log, save_audit_log
 from services.ui_helpers import decision_color
+from services import branding
 
 st.set_page_config(layout="wide")
 
@@ -13,6 +14,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+branding.sidebar_logo()
 
 with open("data/scenarios.json") as f:
     actions = json.load(f)

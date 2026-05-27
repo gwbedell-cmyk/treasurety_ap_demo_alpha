@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 
 from services.evaluator import evaluate_action
 from services.audit import record_decision, load_audit_log
+from services import branding
 
 st.set_page_config(layout="wide")
 
@@ -14,6 +15,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
+branding.sidebar_logo()
 
 with open("data/scenarios.json") as f:
     actions = json.load(f)
