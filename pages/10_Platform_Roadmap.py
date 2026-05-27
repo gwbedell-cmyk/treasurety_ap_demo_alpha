@@ -64,14 +64,32 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ── THIRD ACTIVE MODULE ────────────────────────────────────────────────────────
+st.markdown(
+    '<div style="background:#0f172a;border:2px solid #3b82f6;padding:28px 32px;border-radius:16px;margin-bottom:12px;">'
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">'
+    '<div style="background:#3b82f6;color:white;font-weight:700;font-size:0.75rem;padding:3px 12px;border-radius:999px;">ACTIVE</div>'
+    '<h2 style="color:white;margin:0;">Treasurety Monitor</h2>'
+    '</div>'
+    '<p style="color:#94a3b8;margin:0 0 12px 0;font-size:0.95rem;">Continuous drift detection and governance assurance for autonomous systems. Live telemetry on agent behavior, drift scoring across five dimensions, alert engine, and assurance verdict — all feeding trust signal data back into the Govern runtime.</p>'
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;">'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Drift Detection Engine</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Behavioral Anomaly</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Trust Signal Feed</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Alert Engine</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Assurance Verdict</span>'
+    '</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div style="text-align:center;color:#334155;font-size:1.4rem;margin:4px 0;">↓</div>',
+    unsafe_allow_html=True
+)
+
 # ── ROADMAP MODULES ───────────────────────────────────────────────────────────
 roadmap_modules = [
-    {
-        "name": "Treasurety Monitor",
-        "tagline": "Continuous observability across all autonomous agent activity.",
-        "description": "Live telemetry on agent behavior, execution patterns, drift detection, and anomaly identification across agent fleets. Monitor feeds trust signal data back into the Govern runtime.",
-        "tags": ["Agent Telemetry", "Drift Detection", "Behavioral Anomaly", "Trust Signal Feed"],
-    },
     {
         "name": "Treasurety Shield",
         "tagline": "Adversarial protection and trust boundary enforcement.",
