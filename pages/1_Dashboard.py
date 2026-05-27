@@ -158,28 +158,67 @@ for action, evaluation in zip(actions, evaluations):
         header = f"[{scenario_label}] {header}"
 
     with st.expander(header):
-        col_a, col_b = st.columns(2)
+        col_a, col_b = st.columns([3, 1])
 
         with col_a:
-            st.write(f"**Action Type:** {action['action_type']}")
-            st.write(f"**Counterparty:** {counterparty}")
-            st.write(f"**Action Ref:** {action_ref}")
-            st.write(f"**Agent:** {action['agent_id']}")
-            if action.get("scenario_description"):
-                st.caption(action["scenario_description"])
-
-        with col_b:
+            detail_rows = [
+                ("Agent",        action["agent_id"]),
+                ("Action Type",  action["action_type"]),
+                ("Counterparty", counterparty),
+                ("Action Ref",   action_ref),
+            ]
+            if action.get("amount", 0) > 0:
+                detail_rows.append(("Scope Value", f"${action['amount']:,.0f}"))
+            rows_html = "".join(
+                f'<div style="display:flex;gap:14px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+                f'<span style="color:#475569;font-size:0.82rem;min-width:110px;flex-shrink:0;">{label}</span>'
+                f'<span style="color:#e2e8f0;font-size:0.82rem;">{value}</span>'
+                f'</div>'
+                for label, value in detail_rows
+            )
             st.markdown(
-                f'<div style="background:{color};padding:16px;border-radius:12px;text-align:center;margin-bottom:12px;">'
-                f'<div style="color:white;font-weight:700;font-size:1.1rem;">{decision}</div>'
-                f'<div style="color:rgba(255,255,255,0.85);font-size:0.85rem;">Risk Score: {evaluation["risk_score"]}</div>'
-                f'</div>',
+                '<div style="background:#0a0f1e;border-radius:8px;padding:12px 16px;margin-bottom:12px;">'
+                + rows_html +
+                '</div>',
                 unsafe_allow_html=True
             )
 
+            if evaluation["triggered_policies"]:
+                policies_html = "".join(
+                    f'<div style="background:#0f172a;border-left:3px solid #3b82f6;padding:7px 12px;border-radius:5px;margin-bottom:4px;color:#94a3b8;font-size:0.82rem;">{p}</div>'
+                    for p in evaluation["triggered_policies"]
+                )
+                st.markdown(
+                    '<div style="color:#475569;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Triggered Policies</div>'
+                    + policies_html,
+                    unsafe_allow_html=True
+                )
+
             if evaluation["explanations"]:
-                st.markdown("**Execution Risk Signals:**")
-                for item in evaluation["explanations"]:
-                    st.write(f"• {item}")
-            else:
-                st.success("Clean execution path.")
+                signals_html = "".join(
+                    f'<div style="background:#0f172a;border-left:3px solid #ea580c;padding:7px 12px;border-radius:5px;margin-bottom:4px;color:#94a3b8;font-size:0.82rem;">{s}</div>'
+                    for s in evaluation["explanations"]
+                )
+                st.markdown(
+                    '<div style="color:#475569;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;margin-top:10px;">Execution Risk Signals</div>'
+                    + signals_html,
+                    unsafe_allow_html=True
+                )
+
+            if not evaluation["triggered_policies"] and not evaluation["explanations"]:
+                st.markdown(
+                    '<div style="background:#0f172a;border:1px solid rgba(22,163,74,0.3);border-radius:8px;padding:10px 14px;color:#86efac;font-size:0.83rem;">'
+                    'No risk signals. Action within authorized execution bounds.'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+
+        with col_b:
+            st.markdown(
+                f'<div style="background:{color};border-radius:12px;padding:20px 16px;text-align:center;">'
+                f'<div style="color:rgba(255,255,255,0.65);font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">DECISION</div>'
+                f'<div style="color:white;font-weight:800;font-size:1.15rem;margin-bottom:6px;">{decision}</div>'
+                f'<div style="color:rgba(255,255,255,0.75);font-size:0.8rem;">Score: {evaluation["risk_score"]}</div>'
+                f'</div>',
+                unsafe_allow_html=True
+            )

@@ -143,3 +143,94 @@ hr {
 small, .stCaption, .stCaption * {
     color: #475569 !important;
 }
+
+/* ── HIDE STREAMLIT CHROME ─────────────────────────────────────────── */
+/* Header banner, toolbar buttons (share / star / edit / GitHub), footer */
+header[data-testid="stHeader"]         { display: none !important; }
+[data-testid="stHeader"]               { display: none !important; }
+[data-testid="stToolbar"]              { display: none !important; }
+[data-testid="stDecoration"]           { display: none !important; }
+[data-testid="stStatusWidget"]         { display: none !important; }
+[data-testid="stGitHubBadge"]          { display: none !important; }
+.stDeployButton                        { display: none !important; }
+#MainMenu                              { visibility: hidden !important; }
+footer                                 { visibility: hidden !important; }
+
+/* Reclaim top space now the header bar is gone */
+.block-container { padding-top: 2rem !important; }
+
+/* ── SIDEBAR: hide "app" main page entry ──────────────────────────── */
+[data-testid="stSidebarNavLink"][href="/"]      { display: none !important; }
+[data-testid="stSidebarNavLink"][href=""]       { display: none !important; }
+[data-testid="stPageLink"][href="/"]            { display: none !important; }
+
+/* ── SIDEBAR NAV — premium link styling ──────────────────────────── */
+[data-testid="stSidebarNavLink"] {
+    border-radius: 6px !important;
+    padding: 6px 12px !important;
+    margin: 1px 0 !important;
+    color: #64748b !important;
+    font-size: 0.84rem !important;
+    transition: background 0.15s, color 0.15s !important;
+    text-decoration: none !important;
+}
+
+[data-testid="stSidebarNavLink"]:hover {
+    background: rgba(59,130,246,0.08) !important;
+    color: #7dd3fc !important;
+}
+
+[data-testid="stSidebarNavLink"][aria-current="page"],
+[data-testid="stSidebarNavLink"][aria-selected="true"] {
+    background: rgba(59,130,246,0.12) !important;
+    color: #7dd3fc !important;
+    font-weight: 600 !important;
+    border-left: 3px solid #3b82f6 !important;
+}
+
+/* Sidebar label / section header polish */
+[data-testid="stSidebarNav"] {
+    padding: 0 8px !important;
+}
+
+/* Buttons — consistent dark enterprise feel */
+.stButton > button {
+    background: #1e293b !important;
+    border: 1px solid rgba(99,179,237,0.2) !important;
+    color: #cbd5e1 !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    transition: background 0.15s, border-color 0.15s !important;
+}
+
+.stButton > button:hover {
+    background: #1e3a5f !important;
+    border-color: #3b82f6 !important;
+    color: #7dd3fc !important;
+}
+
+.stButton > button[kind="primary"] {
+    background: #1e3a5f !important;
+    border-color: #3b82f6 !important;
+    color: #7dd3fc !important;
+    font-weight: 600 !important;
+}
+
+/* Selectbox / dropdown polish */
+[data-testid="stSelectbox"] > div > div {
+    background: #0f172a !important;
+    border-color: rgba(99,179,237,0.15) !important;
+    border-radius: 8px !important;
+}
+
+/* Text area polish */
+[data-testid="stTextArea"] textarea {
+    background: #0f172a !important;
+    border-color: rgba(99,179,237,0.15) !important;
+    border-radius: 8px !important;
+    color: #e2e8f0 !important;
+}
+
+/* Subheader color */
+h3 { color: #e2e8f0 !important; }

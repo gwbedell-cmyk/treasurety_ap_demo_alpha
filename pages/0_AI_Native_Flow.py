@@ -88,26 +88,68 @@ if selected_artifact:
     artifact = artifact_metadata[selected_artifact]
     counterparty = proposed.get("counterparty", proposed.get("vendor_name", "—"))
 
-    st.success(f"Artifact ingested: {selected_artifact}")
+    st.markdown(
+        '<div style="background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.25);border-radius:8px;padding:10px 16px;margin-bottom:16px;">'
+        f'<span style="color:#86efac;font-size:0.85rem;font-weight:600;">Artifact ingested — {selected_artifact}</span>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
     st.markdown("---")
 
-    st.subheader("Structured Extraction")
-    st.write(f"**Counterparty:** {artifact['counterparty']}")
-    st.write(f"**Scope Value:** {artifact['amount']}")
-    st.write(f"**AI Proposed Objective:** {artifact['objective']}")
+    st.markdown(
+        '<div style="color:#7dd3fc;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Structured Extraction</div>',
+        unsafe_allow_html=True
+    )
+    extract_rows = [
+        ("Counterparty",         artifact["counterparty"]),
+        ("Scope Value",          artifact["amount"]),
+        ("AI Proposed Objective",artifact["objective"]),
+    ]
+    extract_html = "".join(
+        f'<div style="display:flex;gap:14px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        f'<span style="color:#475569;font-size:0.82rem;min-width:150px;flex-shrink:0;">{label}</span>'
+        f'<span style="color:#e2e8f0;font-size:0.82rem;">{value}</span>'
+        f'</div>'
+        for label, value in extract_rows
+    )
+    st.markdown(
+        '<div style="background:#0a0f1e;border-radius:8px;padding:12px 16px;margin-bottom:20px;">'
+        + extract_html +
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     st.markdown("---")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Proposed Autonomous Action")
-        st.write(f"**Action Type:** {proposed['action_type']}")
-        st.write(f"**Counterparty:** {counterparty}")
+        st.markdown(
+            '<div style="color:#7dd3fc;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Proposed Autonomous Action</div>',
+            unsafe_allow_html=True
+        )
+        action_rows = [
+            ("Agent ID",         proposed["agent_id"]),
+            ("Action Type",      proposed["action_type"]),
+            ("Counterparty",     counterparty),
+            ("Agent Confidence", f"{int(proposed['confidence'] * 100)}%"),
+        ]
         if proposed["amount"] > 0:
-            st.write(f"**Scope Value:** ${proposed['amount']:,.0f}")
-        st.write(f"**Agent Confidence:** {int(proposed['confidence'] * 100)}%")
-        st.write(f"**Agent ID:** {proposed['agent_id']}")
+            action_rows.insert(3, ("Scope Value", f"${proposed['amount']:,.0f}"))
+        action_html = "".join(
+            f'<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);">'
+            f'<span style="color:#64748b;font-size:0.85rem;">{label}</span>'
+            f'<span style="color:#e2e8f0;font-size:0.85rem;font-weight:600;">{value}</span>'
+            f'</div>'
+            for label, value in action_rows
+        )
+        st.markdown(
+            '<div style="background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:18px 20px;">'
+            + action_html +
+            '</div>',
+            unsafe_allow_html=True
+        )
 
     with col2:
         st.markdown(
@@ -132,19 +174,57 @@ if selected_artifact:
         )
 
     st.markdown("---")
-    st.subheader("Execution Risk Signals")
+
+    st.markdown(
+        '<div style="color:#7dd3fc;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Execution Risk Signals</div>',
+        unsafe_allow_html=True
+    )
+
+    if evaluation["triggered_policies"]:
+        policies_html = "".join(
+            f'<div style="background:#0f172a;border-left:3px solid #3b82f6;padding:8px 12px;border-radius:6px;margin-bottom:6px;color:#94a3b8;font-size:0.83rem;">{p}</div>'
+            for p in evaluation["triggered_policies"]
+        )
+        st.markdown(
+            '<div style="color:#475569;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Triggered Policies</div>'
+            + policies_html,
+            unsafe_allow_html=True
+        )
 
     if evaluation["explanations"]:
-        for finding in evaluation["explanations"]:
-            st.write(f"• {finding}")
-    else:
-        st.success("No execution risk signals detected.")
+        signals_html = "".join(
+            f'<div style="background:#0f172a;border-left:3px solid #ea580c;padding:8px 12px;border-radius:6px;margin-bottom:6px;color:#94a3b8;font-size:0.83rem;">{s}</div>'
+            for s in evaluation["explanations"]
+        )
+        st.markdown(
+            '<div style="color:#475569;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;margin-top:12px;">Risk Signals</div>'
+            + signals_html,
+            unsafe_allow_html=True
+        )
+
+    if not evaluation["triggered_policies"] and not evaluation["explanations"]:
+        st.markdown(
+            '<div style="background:#0f172a;border:1px solid rgba(22,163,74,0.3);border-radius:8px;padding:10px 14px;color:#86efac;font-size:0.83rem;">'
+            'No risk signals detected. Action within authorized execution bounds.'
+            '</div>',
+            unsafe_allow_html=True
+        )
 
     st.markdown("---")
 
     if evaluation["risk_score"] <= 25:
-        if st.button("Authorize Execution"):
-            st.success("Execution authorized by Treasurety governance runtime.")
+        if st.button("Authorize Execution", type="primary"):
+            st.markdown(
+                '<div style="background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:8px;padding:12px 16px;color:#86efac;font-size:0.85rem;">'
+                'Execution authorized by Treasurety governance runtime.'
+                '</div>',
+                unsafe_allow_html=True
+            )
     else:
-        if st.button("Escalate to Governance Control Plane"):
-            st.success("Proposed action escalated to governance control plane.")
+        if st.button("Escalate to Governance Control Plane", type="primary"):
+            st.markdown(
+                '<div style="background:rgba(234,88,12,0.08);border:1px solid rgba(234,88,12,0.3);border-radius:8px;padding:12px 16px;color:#fdba74;font-size:0.85rem;">'
+                'Proposed action escalated to governance control plane.'
+                '</div>',
+                unsafe_allow_html=True
+            )
