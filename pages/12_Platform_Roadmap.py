@@ -96,25 +96,37 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ── FOURTH ACTIVE MODULE ──────────────────────────────────────────────────────
+st.markdown(
+    '<div style="background:#0f172a;border:2px solid #3b82f6;padding:28px 32px;border-radius:16px;margin-bottom:12px;">'
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">'
+    '<div style="background:#3b82f6;color:white;font-weight:700;font-size:0.75rem;padding:3px 12px;border-radius:999px;">ACTIVE</div>'
+    '<h2 style="color:white;margin:0;">Treasurety Shield</h2>'
+    '</div>'
+    '<p style="color:#94a3b8;margin:0 0 12px 0;font-size:0.95rem;">Third-party and ecosystem governance for autonomous execution. External agent trust verification, API dependency risk assessment, delegation boundary enforcement, partner stability monitoring, and compositional failure risk analysis.</p>'
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;">'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">External Agent Trust</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">API Dependency Risk</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Delegation Boundary Enforcement</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Partner Trust Monitoring</span>'
+    '<span style="background:#1e3a5f;color:#93c5fd;padding:4px 12px;border-radius:6px;font-size:0.8rem;">Trust Governance Verdict</span>'
+    '</div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div style="text-align:center;color:#334155;font-size:1.4rem;margin:4px 0;">↓</div>',
+    unsafe_allow_html=True
+)
+
 # ── ROADMAP MODULES ───────────────────────────────────────────────────────────
 roadmap_modules = [
-    {
-        "name": "Treasurety Shield",
-        "tagline": "Adversarial protection and trust boundary enforcement.",
-        "description": "Protects the governance runtime against prompt injection, agent impersonation, delegation forgery, and replay attacks. Shield hardens the trust surface of the entire Treasurety platform.",
-        "tags": ["Prompt Injection Defense", "Agent Impersonation Detection", "Replay Prevention", "Trust Hardening"],
-    },
     {
         "name": "Treasurety Simulate",
         "tagline": "Governance simulation engine for policy design and stress-testing.",
         "description": "Run synthetic agent fleets against proposed policy configurations. Simulate edge cases, adversarial inputs, and governance failure modes before deploying policy changes to production.",
         "tags": ["Policy Stress Testing", "Synthetic Agent Fleets", "Failure Mode Analysis", "Pre-Deploy Simulation"],
-    },
-    {
-        "name": "Treasurety Memory",
-        "tagline": "Persistent governance context across agent sessions and actions.",
-        "description": "Stores execution history, trust signals, counterparty behavior patterns, and override precedents. Memory enables governance decisions that improve over time — informed by what has happened before.",
-        "tags": ["Execution History", "Trust Signal Persistence", "Override Precedent", "Adaptive Governance"],
     },
 ]
 
@@ -135,12 +147,6 @@ for idx, module in enumerate(roadmap_modules):
         f'</div>',
         unsafe_allow_html=True
     )
-
-    if idx < len(roadmap_modules) - 1:
-        st.markdown(
-            '<div style="text-align:center;color:#1e293b;font-size:1.2rem;margin:2px 0;">↓</div>',
-            unsafe_allow_html=True
-        )
 
 st.markdown("---")
 
