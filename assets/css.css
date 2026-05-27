@@ -234,3 +234,15 @@ footer                                 { visibility: hidden !important; }
 
 /* Subheader color */
 h3 { color: #e2e8f0 !important; }
+
+/* ── SIDEBAR LOGO — 2× scale ──────────────────────────────────────────── */
+[data-testid="stSidebarHeader"] img {
+    width: 200px !important;
+    height: auto !important;
+    max-height: none !important;
+    display: block !important;
+}
+
+[data-testid="stSidebarHeader"] {
+    padding: 20px 16px 12px 16px !important;
+}
