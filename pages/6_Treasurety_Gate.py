@@ -99,6 +99,13 @@ def sev_color(sev: str) -> str:
     return {"CRITICAL": "#dc2626", "HIGH": "#ea580c", "MODERATE": "#f59e0b", "LOW": "#16a34a"}.get(sev, "#64748b")
 
 
+def score_band(s: int) -> tuple[str, str]:
+    if s < 25:  return "Low",      "#16a34a"
+    if s < 50:  return "Moderate", "#f59e0b"
+    if s < 75:  return "High",     "#ea580c"
+    return              "Critical", "#dc2626"
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # LANDING PAGE
 # ══════════════════════════════════════════════════════════════════════════════
@@ -392,19 +399,24 @@ elif step == 4:
 
     d = st.session_state.gate_intake
 
+    _approval_opts = ["Pre-action approval", "Post-action review", "Sampled review",
+                      "Exception-based", "None — system acts autonomously"]
+    # "None" is the engine-normalized form of "None — system acts autonomously";
+    # map it back to the display label when re-rendering after back-navigation.
+    _stored = d.get("approval_model", "Exception-based")
+    _approval_default = "None — system acts autonomously" if _stored == "None" else (
+        _stored if _stored in _approval_opts else "Exception-based"
+    )
+
     c1, c2 = st.columns(2)
     with c1:
-        d["approval_model"] = st.selectbox(
+        _selected = st.selectbox(
             "Human Review Model",
-            ["Pre-action approval", "Post-action review", "Sampled review",
-             "Exception-based", "None — system acts autonomously"],
-            index=["Pre-action approval","Post-action review","Sampled review",
-                   "Exception-based","None — system acts autonomously"]
-                  .index(d.get("approval_model","Exception-based"))
+            _approval_opts,
+            index=_approval_opts.index(_approval_default)
         )
-        # Normalize for engine
-        if d["approval_model"] == "None — system acts autonomously":
-            d["approval_model"] = "None"
+        # Normalize display label to engine token before storing
+        d["approval_model"] = "None" if _selected == "None — system acts autonomously" else _selected
 
         d["reviewers_trained"] = st.toggle(
             "Human reviewers are trained on this system's risks and authority",
@@ -704,12 +716,6 @@ elif step == "results":
         ("Ecosystem Exposure",   "ecosystem",   "Connected-system blast radius"),
         ("Governance Maturity",  "governance",  "Audit, versioning, and incident ownership"),
     ]
-
-    def score_band(s):
-        if s < 25:   return "Low",      "#16a34a"
-        if s < 50:   return "Moderate", "#f59e0b"
-        if s < 75:   return "High",     "#ea580c"
-        return           "Critical", "#dc2626"
 
     d_cols = st.columns(5)
     for col, (label, key, desc) in zip(d_cols, dim_meta):
