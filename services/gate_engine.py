@@ -1,5 +1,5 @@
 """
-Treasurety Gate™ — Trust Evaluation Engine
+Treasurety Gate — Trust Evaluation Engine
 Modular, rule-based evaluation for agentic system deployment authorization.
 """
 

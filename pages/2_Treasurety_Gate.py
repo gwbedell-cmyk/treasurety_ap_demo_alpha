@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from services import branding
 from services.gate_engine import evaluate_system
+from services.gate_ai_engine import GateConversation
 
 st.set_page_config(layout="wide")
 
@@ -24,9 +25,11 @@ def init_state():
         st.session_state.gate_intake = {}
     if "gate_results" not in st.session_state:
         st.session_state.gate_results = None
+    if "gate_ai_conv" not in st.session_state:
+        st.session_state.gate_ai_conv = None
 
 def reset_gate():
-    for key in ["gate_step", "gate_intake", "gate_results"]:
+    for key in ["gate_step", "gate_intake", "gate_results", "gate_ai_conv"]:
         if key in st.session_state:
             del st.session_state[key]
 
@@ -42,7 +45,7 @@ def page_header():
         '<div style="margin-bottom:4px;">'
         '<span style="background:rgba(59,130,246,0.12);color:#7dd3fc;font-size:0.72rem;'
         'font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:4px 14px;'
-        'border-radius:999px;border:1px solid rgba(59,130,246,0.3);">TREASURETY GATE™</span>'
+        'border-radius:999px;border:1px solid rgba(59,130,246,0.3);">TREASURETY GATE</span>'
         '</div>',
         unsafe_allow_html=True
     )
@@ -115,7 +118,7 @@ if step == "landing":
 
     st.markdown(
         '<h1 style="font-size:2.8rem;font-weight:800;letter-spacing:-0.03em;'
-        'margin-bottom:4px;">Treasurety Gate™</h1>',
+        'margin-bottom:4px;">Treasurety Gate</h1>',
         unsafe_allow_html=True
     )
     st.markdown(
@@ -155,13 +158,26 @@ if step == "landing":
     # CTA buttons
     c1, c2, c3 = st.columns([2, 2, 3])
     with c1:
-        if st.button("Apply for a Trust Certificate", use_container_width=True, type="primary"):
+        if st.button("Standard Assessment", use_container_width=True, type="primary",
+                     help="Structured form wizard — step-by-step intake"):
             st.session_state.gate_step = 1
             st.rerun()
     with c2:
-        if st.button("Test Your Autonomous System", use_container_width=True):
-            st.session_state.gate_step = 1
+        if st.button("AI-Native Assessment", use_container_width=True,
+                     help="Conversational EPC intake — governed dialogue with ATC eligibility verdict"):
+            st.session_state.gate_step = "ai_chat"
             st.rerun()
+
+    st.markdown(
+        '<div style="display:flex;gap:24px;margin-top:10px;">'
+        '<div style="flex:1;color:#475569;font-size:0.78rem;">Form-based wizard. '
+        'Six structured steps. Produces a Trust Certificate.</div>'
+        '<div style="flex:1;color:#475569;font-size:0.78rem;">Conversational intake. '
+        'Eight governed stages. Produces a free deployment verdict and ATC eligibility assessment.</div>'
+        '<div style="flex:1;"></div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     st.markdown("---")
 
@@ -574,7 +590,7 @@ elif step == "evaluating":
     st.markdown(
         '<div style="text-align:center;padding:32px 0 16px 0;">'
         '<div style="color:#7dd3fc;font-size:0.78rem;font-weight:700;letter-spacing:0.16em;'
-        'text-transform:uppercase;margin-bottom:12px;">TREASURETY GATE™</div>'
+        'text-transform:uppercase;margin-bottom:12px;">TREASURETY GATE</div>'
         '<div style="color:white;font-size:2rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px;">'
         'Operational Trust Evaluation</div>'
         '<div style="color:#475569;font-size:0.92rem;">'
@@ -662,7 +678,7 @@ elif step == "results":
         f'margin-bottom:28px;text-align:center;">'
         f'<div style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;'
         f'letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px;">'
-        f'TREASURETY GATE™ — DEPLOYMENT AUTHORIZATION VERDICT</div>'
+        f'TREASURETY GATE — DEPLOYMENT AUTHORIZATION VERDICT</div>'
         f'<div style="color:white;font-size:2.8rem;font-weight:900;letter-spacing:-0.02em;'
         f'margin-bottom:8px;">{verdict}</div>'
         f'<div style="color:rgba(255,255,255,0.75);font-size:0.92rem;max-width:640px;'
@@ -818,7 +834,7 @@ elif step == "results":
         f'border-bottom:1px solid rgba(255,255,255,0.06);">'
         f'<div>'
         f'<div style="color:white;font-size:1.1rem;font-weight:700;margin-bottom:4px;">'
-        f'Treasurety Gate™ — Operational Trust Certificate</div>'
+        f'Treasurety Gate — Operational Trust Certificate</div>'
         f'<div style="color:#475569;font-size:0.78rem;">'
         f'Provisional Self-Assessment · {cert["evidence_tier"]}</div>'
         f'</div>'
@@ -917,8 +933,77 @@ elif step == "results":
     st.markdown("")
     st.markdown(
         '<p style="color:#1e293b;font-size:0.73rem;text-align:center;">'
-        'Treasurety Gate™ — Operational Trust Certification Infrastructure for Agentic Systems · '
+        'Treasurety Gate — Operational Trust Certification Infrastructure for Agentic Systems · '
         'Provisional Certificate · Self-Assessment Tier'
         '</p>',
         unsafe_allow_html=True
     )
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AI-NATIVE CONVERSATIONAL ASSESSMENT
+# ══════════════════════════════════════════════════════════════════════════════
+
+elif step == "ai_chat":
+    page_header()
+
+    # Initialize conversation on first entry
+    if st.session_state.gate_ai_conv is None:
+        conv = GateConversation()
+        conv.start()
+        st.session_state.gate_ai_conv = conv
+
+    conv = st.session_state.gate_ai_conv
+
+    # ── Header ────────────────────────────────────────────────────────────────
+    st.markdown(
+        '<div style="margin-bottom:4px;">'
+        '<span style="background:rgba(59,130,246,0.12);color:#7dd3fc;font-size:0.72rem;'
+        'font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:4px 14px;'
+        'border-radius:999px;border:1px solid rgba(59,130,246,0.3);">AI-NATIVE ASSESSMENT</span>'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    # ── Progress bar (intake only) ────────────────────────────────────────────
+    if not conv.complete:
+        prog = conv.progress()
+        st.progress(prog["pct"] / 100)
+        st.caption(f"**{prog['stage_label']}** · Stage {prog['stage_number']} of {prog['total_stages']}"
+                   f" · {prog['questions_done']} of {prog['total_questions']} questions")
+    else:
+        st.caption(f"Session `{conv.session_id}` — Assessment complete")
+
+    st.markdown("---")
+
+    # ── Message history ───────────────────────────────────────────────────────
+    for msg in conv.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    # ── Post-verdict artifact panels ──────────────────────────────────────────
+    if conv.complete:
+        with st.expander("EPC State Object — JSON", expanded=False):
+            st.code(conv.get_epc_json(), language="json")
+
+    if conv.atc_path_active and conv.atc_pricing_epc:
+        with st.expander("ATC Pricing EPC — JSON", expanded=False):
+            st.code(conv.get_atc_pricing_json(), language="json")
+
+    # ── Chat input or reset ───────────────────────────────────────────────────
+    if conv.complete and not conv.awaiting_atc_decision and not conv.atc_path_active:
+        st.markdown("")
+        col1, _ = st.columns([2, 5])
+        with col1:
+            if st.button("Start New Assessment", use_container_width=True, type="primary"):
+                reset_gate()
+                st.rerun()
+    else:
+        placeholder = (
+            "Type your answer or select a numbered option..."
+            if not conv.awaiting_atc_decision
+            else "Type 'yes' to proceed to ATC review, or 'no' to close..."
+        )
+        if prompt := st.chat_input(placeholder):
+            conv.advance(prompt)
+            st.rerun()
