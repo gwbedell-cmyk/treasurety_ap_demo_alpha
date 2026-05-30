@@ -47,7 +47,7 @@ Treasurety Shield    Ecosystem and threat protection
 
 1.2 **Continuous assurance requires a valid ATC.** An Agentic Trust Certificate (ATC) is the machine-readable record that continuous assurance tooling can act upon. Monitor eligibility is gated on ATC issuance.
 
-1.3 **The protocol is the engine.** Implementations MUST NOT invent governance logic. All scoring, verdict thresholds, finding generation, and eligibility rules are defined in this document and in the reference implementation at `services/gate_ai_engine.py` and `services/gate_engine.py`.
+1.3 **The protocol is the decision authority for Gate-layer evaluations.** Implementations MUST NOT invent governance logic. All scoring, verdict thresholds, finding generation, and eligibility rules are defined in this document. Reference implementations are derived from this specification; this specification governs all implementations, not the reverse.
 
 1.4 **Free verdict first.** No pricing information SHALL be presented before the free deployment verdict has been delivered to the user. Implementations MUST follow the mandated output sequence defined in Section 6.
 
@@ -345,6 +345,7 @@ The Entity-Purpose-Context (EPC) object is the canonical machine-readable record
     {
       "index": "integer 1–3",
       "title": "string",
+      "severity": "CRITICAL | HIGH | MODERATE | LOW",
       "body": "string"
     }
   ],
@@ -662,6 +663,17 @@ Step 6   CLOSE
 
 Exactly three findings MUST be generated. Findings are numbered 1–3 and cover the three canonical areas defined below. The content MUST be derived from the specific scores and state fields of the assessed system; findings MUST NOT be generic.
 
+**Severity Enumeration.** Each finding MUST carry exactly one severity value from the following set, in descending order of criticality:
+
+| Value | Meaning |
+|---|---|
+| `CRITICAL` | Immediate remediation required; finding blocks deployment or ATC eligibility |
+| `HIGH` | Material gap; remediation required before production scope or ATC progression |
+| `MODERATE` | Notable gap; remediation recommended before full deployment |
+| `LOW` | Minor or informational; no blocking condition present |
+
+No other severity values are permitted in TGP-1 artifacts.
+
 ### Finding 1 — Authority and Governance Posture
 
 **Derived from:** ARS, GMS, Stage 3, Stage 5.
@@ -713,7 +725,7 @@ A system is ATC-eligible if and only if ALL of the following conditions are true
 | ATC-E3 | `kill_switch = true` OR `fallback_mode = true` |
 | ATC-E4 | `escalation_defined = true` |
 | ATC-E5 | ERS < 80 |
-| ATC-E6 | Verdict is NOT `DANGER — DO NOT DEPLOY` due to BLK-01 or BLK-08 |
+| ATC-E6 | Verdict is NOT `DANGER — DO NOT DEPLOY` |
 
 If any rule fails, `atc_eligible = false`. The system MUST remediate the failing conditions before re-assessment.
 
@@ -739,9 +751,11 @@ If multiple tier conditions match, the highest tier MUST be applied.
 
 Implementations MUST NOT enroll a system in Treasurety Monitor before an ATC has been issued for that system. This rule has no exceptions.
 
-`monitor_eligible = (atc_eligible = true AND valid_atc_exists = true)`
+TGP-1 operates at assessment time — before any ATC has been issued. The `monitor_eligible` field in the EPC therefore represents a conditional eligibility signal, not an active enrollment status:
 
-For protocol purposes (pre-ATC assessment), implementations MAY surface Monitor eligibility as conditional: "Monitor enrollment is available after ATC issuance."
+`monitor_eligible = atc_eligible`  *(assessment-time signal)*
+
+This indicates whether the system will qualify for Monitor enrollment upon successful ATC issuance. Whether a valid, unexpired ATC exists is a runtime prerequisite evaluated outside TGP-1 scope — at the time the system attempts Monitor enrollment. Implementations managing ATC lifecycle MAY enforce this prerequisite at enrollment time; TGP-1 assessment implementations MUST NOT assume an ATC exists and MUST NOT set `monitor_eligible = true` for a system where `atc_eligible = false`.
 
 ### 10.2 Monitor Readiness Signal
 
