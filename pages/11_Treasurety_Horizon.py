@@ -203,12 +203,12 @@ def _section_divider(label: str) -> str:
     return (
         '<div style="display:flex;align-items:center;gap:16px;margin:32px 0 18px 0;">'
         '<div style="flex:1;height:1px;background:linear-gradient(to right,'
-        'rgba(99,102,241,0.4),transparent);"></div>'
-        f'<span style="background:rgba(99,102,241,0.1);color:#a5b4fc;font-size:0.68rem;'
+        'rgba(144,211,255,0.3),transparent);"></div>'
+        f'<span style="background:rgba(144,211,255,0.08);color:#90d3ff;font-size:0.68rem;'
         f'font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:5px 18px;'
-        f'border-radius:999px;border:1px solid rgba(99,102,241,0.25);">{label}</span>'
+        f'border-radius:999px;border:1px solid rgba(144,211,255,0.2);">{label}</span>'
         '<div style="flex:1;height:1px;background:linear-gradient(to left,'
-        'rgba(99,102,241,0.4),transparent);"></div>'
+        'rgba(144,211,255,0.3),transparent);"></div>'
         '</div>'
     )
 
@@ -219,9 +219,9 @@ st.image("assets/logo.png", width=240)
 
 st.markdown(
     '<div style="margin-bottom:4px;">'
-    '<span style="background:rgba(99,102,241,0.15);color:#a5b4fc;font-size:0.72rem;font-weight:700;'
+    '<span style="background:rgba(144,211,255,0.1);color:#90d3ff;font-size:0.72rem;font-weight:700;'
     'letter-spacing:0.12em;text-transform:uppercase;padding:4px 14px;border-radius:999px;'
-    'border:1px solid rgba(99,102,241,0.3);">TREASURETY HORIZON</span>'
+    'border:1px solid rgba(144,211,255,0.2);">TREASURETY HORIZON</span>'
     '</div>',
     unsafe_allow_html=True
 )
@@ -276,9 +276,9 @@ if top_factor == "none":
 
 # System badge
 st.markdown(
-    f'<div style="background:#0a0f1e;border-left:4px solid #6366f1;padding:14px 18px;'
+    f'<div style="background:#0a0f1e;border-left:4px solid #90d3ff;padding:14px 18px;'
     f'border-radius:8px;margin-bottom:24px;color:#94a3b8;font-size:0.88rem;">'
-    f'<strong style="color:#a5b4fc;">{s["system_name"]}</strong>'
+    f'<strong style="color:#90d3ff;">{s["system_name"]}</strong>'
     f'&nbsp;&nbsp;&middot;&nbsp;&nbsp;{s["domain"]}&nbsp;&nbsp;&middot;&nbsp;&nbsp;{s["agent_type"]}<br>'
     f'<em>{s["description"]}</em>'
     f'</div>',
@@ -403,8 +403,8 @@ fig_sv.add_trace(go.Scatterpolar(
 ))
 fig_sv.add_trace(go.Scatterpolar(
     r=sv_vals, theta=sv_cats, fill="toself",
-    fillcolor="rgba(99,102,241,0.15)",
-    line=dict(color="#6366f1", width=2.5),
+    fillcolor="rgba(144,211,255,0.1)",
+    line=dict(color="#90d3ff", width=2.5),
     name="Governance State",
 ))
 fig_sv.update_layout(
@@ -417,7 +417,7 @@ fig_sv.update_layout(
             linecolor="rgba(255,255,255,0.07)",
         ),
         angularaxis=dict(
-            tickfont=dict(color="#a5b4fc", size=11),
+            tickfont=dict(color="#90d3ff", size=11),
             gridcolor="rgba(255,255,255,0.07)",
             linecolor="rgba(255,255,255,0.07)",
         ),
@@ -451,7 +451,7 @@ for dim_name, score in dim_rows:
         f'</div>'
     )
 st.markdown(
-    f'<div style="background:#0a0f1e;border:1px solid rgba(99,102,241,0.15);'
+    f'<div style="background:#0a0f1e;border:1px solid rgba(144,211,255,0.1);'
     f'border-radius:12px;padding:20px 24px;margin-top:12px;">'
     f'<div style="color:#64748b;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;'
     f'text-transform:uppercase;margin-bottom:12px;">Dimension Detail (0-100, higher = stronger)</div>'
@@ -509,7 +509,7 @@ with th_right:
         ("Boundary Distance",
          f"{'+' if horizon.boundary_distance >= 0 else ''}{horizon.boundary_distance:.1f} pts",
          m_color),
-        ("Primary Drift Factor",       top_factor,              "#6366f1"),
+        ("Primary Drift Factor",       top_factor,              "#90d3ff"),
         ("Drift Direction",
          horizon.drift.drift_direction.replace("_", " "),
          d_color),
@@ -524,7 +524,7 @@ with th_right:
             f'</div>'
         )
     st.markdown(
-        '<div style="background:#0a0f1e;border:1px solid rgba(99,102,241,0.15);'
+        '<div style="background:#0a0f1e;border:1px solid rgba(144,211,255,0.1);'
         'border-radius:12px;padding:20px 24px;margin-bottom:12px;">'
         '<div style="color:#64748b;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;'
         'text-transform:uppercase;margin-bottom:10px;">Trust Horizon Detail</div>'
@@ -534,9 +534,9 @@ with th_right:
     )
 
     st.markdown(
-        f'<div style="background:#0a0f1e;border:1px solid rgba(99,102,241,0.2);'
+        f'<div style="background:#0a0f1e;border:1px solid rgba(144,211,255,0.1);'
         f'border-radius:10px;padding:14px 16px;">'
-        f'<div style="color:#a5b4fc;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;'
+        f'<div style="color:#90d3ff;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;'
         f'margin-bottom:5px;">PRIMARY RISK FACTOR</div>'
         f'<div style="color:#cbd5e1;font-size:0.85rem;line-height:1.5;">'
         f'{horizon.trust_horizon.primary_risk_factor}</div>'
@@ -557,9 +557,9 @@ with th_right:
         )
         for adj in _non_default:
             st.markdown(
-                f'<div style="background:#0a0a18;border-left:2px solid rgba(99,102,241,0.4);'
+                f'<div style="background:#0a0a18;border-left:2px solid rgba(144,211,255,0.3);'
                 f'padding:7px 14px;border-radius:4px;margin-bottom:4px;">'
-                f'<span style="color:#a5b4fc;font-size:0.8rem;">{adj}</span>'
+                f'<span style="color:#90d3ff;font-size:0.8rem;">{adj}</span>'
                 f'</div>',
                 unsafe_allow_html=True
             )
@@ -599,7 +599,7 @@ with ms_c1:
         f'text-transform:uppercase;margin-bottom:8px;">INSTABILITY SCORE</div>'
         f'<div style="color:{_inst_col};font-size:2.2rem;font-weight:800;margin-bottom:4px;">{hm.instability_score:.0f}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">/ 100 &nbsp;&middot;&nbsp; posture risk</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">Lower is stronger</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">Lower is stronger</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -612,7 +612,7 @@ with ms_c2:
         f'text-transform:uppercase;margin-bottom:8px;">BOUNDARY CONDITION</div>'
         f'<div style="color:{_bar_col};font-size:0.9rem;font-weight:800;margin-bottom:4px;">{_barrier_display}</div>'
         f'<div style="color:#64748b;font-size:0.7rem;line-height:1.5;">{_barrier_detail}</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">Proximity: {hm.barrier_proximity_score:.0f}/100</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">Proximity: {hm.barrier_proximity_score:.0f}/100</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -625,7 +625,7 @@ with ms_c3:
         f'text-transform:uppercase;margin-bottom:8px;">RESONANCE PRESSURE</div>'
         f'<div style="color:{_res_col};font-size:1.5rem;font-weight:800;margin-bottom:4px;">{hm.resonance_label}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">{hm.resonance_score:.0f} / 100</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">Correlated failure risk</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">Correlated failure risk</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -638,7 +638,7 @@ with ms_c4:
         f'text-transform:uppercase;margin-bottom:8px;">COHERENCE EXHAUSTION</div>'
         f'<div style="color:{_ced_col};font-size:1.5rem;font-weight:800;margin-bottom:4px;">{hm.ced_label}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">Index: {hm.ced:.3f}</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">Stress vs. capacity</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">Stress vs. capacity</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -654,7 +654,7 @@ with ms_r2c1:
         f'text-transform:uppercase;margin-bottom:8px;">FAILURE ENTROPY</div>'
         f'<div style="color:{_rent_col};font-size:2.2rem;font-weight:800;margin-bottom:4px;">{hm.rentropy_score:.0f}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">/ 100 &nbsp;&middot;&nbsp; spread index</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">High = failure spread across dimensions</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">High = failure spread across dimensions</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -667,7 +667,7 @@ with ms_r2c2:
         f'text-transform:uppercase;margin-bottom:8px;">COHERENCE-CHAOS RATIO</div>'
         f'<div style="color:{_xi_col};font-size:1.8rem;font-weight:800;margin-bottom:4px;">&xi; {hm.xi:.3f}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">{hm.xi_label}</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">&lt;1 = attractor &nbsp;&middot;&nbsp; &gt;1 = chaos dominant</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">&lt;1 = attractor &nbsp;&middot;&nbsp; &gt;1 = chaos dominant</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -680,7 +680,7 @@ with ms_r2c3:
         f'text-transform:uppercase;margin-bottom:8px;">COMPOSITE STABILITY</div>'
         f'<div style="color:{_vtot_col};font-size:2.2rem;font-weight:800;margin-bottom:4px;">{hm.v_total_score:.0f}</div>'
         f'<div style="color:#64748b;font-size:0.72rem;">/ 100 &nbsp;&middot;&nbsp; V-total index</div>'
-        f'<div style="color:#475569;font-size:0.68rem;margin-top:4px;">Instability + Entropy + Boundary pressure</div>'
+        f'<div style="color:#7b8fa1;font-size:0.68rem;margin-top:4px;">Instability + Entropy + Boundary pressure</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -714,10 +714,10 @@ if horizon.corrective_actions:
     for action in horizon.corrective_actions:
         ic = _IMPACT_COLORS.get(action.expected_impact, "#64748b")
         st.markdown(
-            f'<div style="background:#0a0f1e;border:1px solid rgba(99,102,241,0.15);'
-            f'border-left:3px solid #6366f1;padding:16px 20px;border-radius:8px;margin-bottom:10px;">'
+            f'<div style="background:#0a0f1e;border:1px solid rgba(144,211,255,0.1);'
+            f'border-left:3px solid #90d3ff;padding:16px 20px;border-radius:8px;margin-bottom:10px;">'
             f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
-            f'<span style="background:rgba(99,102,241,0.2);color:#a5b4fc;font-weight:800;'
+            f'<span style="background:rgba(144,211,255,0.1);color:#90d3ff;font-weight:800;'
             f'font-size:0.82rem;width:24px;height:24px;border-radius:50%;display:inline-flex;'
             f'align-items:center;justify-content:center;flex-shrink:0;">{action.priority}</span>'
             f'<span style="color:white;font-weight:700;font-size:0.92rem;">{action.display_dimension}</span>'
@@ -753,15 +753,15 @@ for i, (title, desc) in enumerate(upcoming):
     col = up_c1 if i % 2 == 0 else up_c2
     with col:
         st.markdown(
-            f'<div style="background:#0a0f1e;border:1px solid rgba(99,102,241,0.12);'
+            f'<div style="background:#0a0f1e;border:1px solid rgba(144,211,255,0.08);'
             f'border-radius:12px;padding:18px 20px;margin-bottom:10px;opacity:0.6;">'
             f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">'
-            f'<span style="color:#6366f1;font-weight:700;font-size:0.88rem;">{title}</span>'
-            f'<span style="background:rgba(99,102,241,0.15);color:#818cf8;font-size:0.64rem;'
+            f'<span style="color:#90d3ff;font-weight:700;font-size:0.88rem;">{title}</span>'
+            f'<span style="background:rgba(144,211,255,0.1);color:#90d3ff;font-size:0.64rem;'
             f'font-weight:700;padding:2px 9px;border-radius:999px;letter-spacing:0.08em;'
             f'text-transform:uppercase;">Coming Soon</span>'
             f'</div>'
-            f'<div style="color:#475569;font-size:0.82rem;line-height:1.5;">{desc}</div>'
+            f'<div style="color:#8898a8;font-size:0.82rem;line-height:1.5;">{desc}</div>'
             f'</div>',
             unsafe_allow_html=True
         )
