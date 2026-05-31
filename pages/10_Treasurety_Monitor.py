@@ -1,6 +1,7 @@
 import streamlit as st
 import plotly.graph_objects as go
 from services import branding
+from services.horizon import evaluate_horizon_from_monitor_scenario
 
 st.set_page_config(layout="wide")
 
@@ -226,6 +227,34 @@ def generate_recommendations(s, verdict):
         recs.append("Continue standard Treasurety Monitor cadence. No immediate action required.")
     return recs
 
+def _make_previous_scenario(scenario: dict):
+    """
+    Derive a synthetic previous-period scenario from trend_history velocity.
+    Used to give Horizon a drift velocity signal without separate historical data.
+    """
+    h = scenario.get("trend_history", [])
+    if len(h) < 2:
+        return None
+    # 3-period average for a stable velocity estimate
+    prev_stability = sum(h[-4:-1]) / 3 if len(h) >= 4 else h[-2]
+    delta = h[-1] - prev_stability  # positive = currently more stable
+
+    _SKIP         = {"system_name", "domain", "agent_type", "description", "trend_history"}
+    _STABILITY_KS = {"governance_stability", "trust_integrity"}
+
+    prev = {}
+    for k, v in scenario.items():
+        if k in _SKIP:
+            prev[k] = v
+        elif k in _STABILITY_KS and isinstance(v, (int, float)):
+            prev[k] = max(0.0, min(100.0, v - delta))
+        elif isinstance(v, (int, float)):
+            prev[k] = max(0.0, min(100.0, v + delta * 0.7))
+        else:
+            prev[k] = v
+    return prev
+
+
 def recommend_modules(s, verdict):
     modules = []
     if s["ecosystem_drift"] >= 45 or s["trust_drift"] >= 45:
@@ -267,9 +296,10 @@ s = SCENARIOS[scenario_name]
 drift_risk = compute_drift_risk(s)
 drift_label, drift_color = drift_band(drift_risk)
 verdict, verdict_color, verdict_desc = assurance_verdict(drift_risk, s["governance_stability"])
-alerts = generate_alerts(s)
-recs = generate_recommendations(s, verdict)
+alerts  = generate_alerts(s)
+recs    = generate_recommendations(s, verdict)
 modules = recommend_modules(s, verdict)
+horizon = evaluate_horizon_from_monitor_scenario(s, _make_previous_scenario(s))
 
 st.markdown(
     f'<div style="background:#0f172a;border-left:4px solid #06b6d4;padding:14px 18px;border-radius:8px;margin-bottom:20px;color:#94a3b8;font-size:0.88rem;">'
@@ -555,11 +585,316 @@ with exec_right:
         unsafe_allow_html=True
     )
 
+# ── MODULE 8: TREASURETY HORIZON ──────────────────────────────────────────────
+
+_HZ_MEMBERSHIP_COLORS = {
+    "ATTRACTOR_MEMBER":  "#16a34a",
+    "NEAR_BOUNDARY":     "#f59e0b",
+    "OUTSIDE_ATTRACTOR": "#ea580c",
+    "CRITICAL_DRIFT":    "#dc2626",
+}
+_HZ_MEMBERSHIP_SHORT = {
+    "ATTRACTOR_MEMBER":  "IN ZONE",
+    "NEAR_BOUNDARY":     "NEAR BOUNDARY",
+    "OUTSIDE_ATTRACTOR": "OUTSIDE ZONE",
+    "CRITICAL_DRIFT":    "CRITICAL DRIFT",
+}
+_HZ_HORIZON_COLORS = {
+    "Stable Horizon":  "#16a34a",
+    "Watch Horizon":   "#f59e0b",
+    "Urgent Horizon":  "#ea580c",
+    "Expired Horizon": "#dc2626",
+}
+_HZ_STABILITY_COLORS = {
+    "stable":   "#16a34a",
+    "watch":    "#f59e0b",
+    "unstable": "#ea580c",
+    "critical": "#dc2626",
+}
+_HZ_DRIFT_COLORS = {
+    "IMPROVING":         "#16a34a",
+    "STABLE":            "#06b6d4",
+    "DEGRADING":         "#f59e0b",
+    "RAPID_DEGRADATION": "#dc2626",
+}
+_HZ_IMPACT_COLORS = {"HIGH": "#dc2626", "MEDIUM": "#f59e0b", "LOW": "#16a34a"}
+
+m_color = _HZ_MEMBERSHIP_COLORS.get(horizon.horizon_membership, "#64748b")
+h_color = _HZ_HORIZON_COLORS.get(horizon.trust_horizon.horizon_label, "#64748b")
+s_color = _HZ_STABILITY_COLORS.get(horizon.stability.stability_label, "#64748b")
+d_color = _HZ_DRIFT_COLORS.get(horizon.drift.drift_direction, "#64748b")
+
+vel       = horizon.governance_velocity
+acc       = horizon.governance_acceleration
+vel_sign  = "+" if vel >= 0 else ""
+acc_sign  = "+" if acc >= 0 else ""
+vel_arrow = "↑" if vel > 0.5 else ("↓" if vel < -0.5 else "→")
+
+th_months  = horizon.trust_horizon_months
+th_display = f"{th_months:.1f} mo" if th_months >= 0.1 else "< 0.1 mo"
+
+top_factor = horizon.trajectory_summary.top_drift_factor
+if top_factor == "none":
+    top_factor = "None detected"
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(
+    '<div style="display:flex;align-items:center;gap:16px;margin:8px 0 20px 0;">'
+    '<div style="flex:1;height:1px;background:linear-gradient(to right,'
+    'rgba(139,92,246,0.5),transparent);"></div>'
+    '<span style="background:rgba(139,92,246,0.15);color:#c4b5fd;font-size:0.72rem;'
+    'font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:5px 16px;'
+    'border-radius:999px;border:1px solid rgba(139,92,246,0.35);">TREASURETY HORIZON</span>'
+    '<div style="flex:1;height:1px;background:linear-gradient(to left,'
+    'rgba(139,92,246,0.5),transparent);"></div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+st.markdown("#### Governance Stability Analysis & Trust Horizon")
+st.caption(
+    "Horizon maps the system’s governance posture against its stability zone and estimates "
+    "how long current trust conditions can hold. All Trust Horizon estimates are heuristic."
+)
+
+# ── STATUS CARDS ───────────────────────────────────────────────────────────────
+
+hz_c1, hz_c2, hz_c3, hz_c4 = st.columns(4)
+
+with hz_c1:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {m_color}33;border-top:3px solid {m_color};'
+        f'border-radius:12px;padding:20px;text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:10px;">ATTRACTOR MEMBERSHIP</div>'
+        f'<div style="color:{m_color};font-size:1.05rem;font-weight:800;margin-bottom:6px;">'
+        f'{_HZ_MEMBERSHIP_SHORT.get(horizon.horizon_membership, horizon.horizon_membership)}</div>'
+        f'<div style="color:#64748b;font-size:0.75rem;">Stability score: {horizon.horizon_stability:.0f}/100</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hz_c2:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {s_color}33;border-top:3px solid {s_color};'
+        f'border-radius:12px;padding:20px;text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:10px;">GOVERNANCE STABILITY</div>'
+        f'<div style="color:{s_color};font-size:2rem;font-weight:800;margin-bottom:6px;">'
+        f'{horizon.horizon_stability:.0f}</div>'
+        f'<div style="color:#64748b;font-size:0.75rem;">{horizon.stability.stability_label.upper()}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hz_c3:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {h_color}33;border-top:3px solid {h_color};'
+        f'border-radius:12px;padding:20px;text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:10px;">TRUST HORIZON</div>'
+        f'<div style="color:{h_color};font-size:2rem;font-weight:800;margin-bottom:6px;">{th_display}</div>'
+        f'<div style="color:#64748b;font-size:0.75rem;">{horizon.trust_horizon.horizon_label}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hz_c4:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {d_color}33;border-top:3px solid {d_color};'
+        f'border-radius:12px;padding:20px;text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:10px;">GOVERNANCE DRIFT</div>'
+        f'<div style="color:{d_color};font-size:1.6rem;font-weight:800;margin-bottom:6px;">'
+        f'{vel_arrow} {vel_sign}{vel:.1f}</div>'
+        f'<div style="color:#64748b;font-size:0.75rem;">'
+        f'{horizon.drift.drift_direction.replace("_", " ")}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+# ── CHARTS ─────────────────────────────────────────────────────────────────────
+
+sv = horizon.state_vector
+hz_chart_l, hz_chart_r = st.columns(2)
+
+with hz_chart_l:
+    st.markdown(
+        '<p style="color:#94a3b8;font-size:0.85rem;margin-bottom:4px;font-weight:600;">'
+        'Governance State Vector (0–100, higher = stronger posture)</p>',
+        unsafe_allow_html=True
+    )
+    sv_labels = ["Authority", "Scope", "Observability", "Intervention",
+                 "Accountability", "Reversibility", "Exceptions", "Drift Mon."]
+    sv_values = [sv.authority, sv.scope, sv.observability, sv.intervention_capability,
+                 sv.accountability, sv.reversibility, sv.exception_control, sv.drift_monitoring]
+    sv_cats   = sv_labels + [sv_labels[0]]
+    sv_vals   = sv_values + [sv_values[0]]
+    n         = len(sv_labels) + 1
+
+    fig_sv = go.Figure()
+    fig_sv.add_trace(go.Scatterpolar(
+        r=[65] * n, theta=sv_cats, fill="toself",
+        fillcolor="rgba(22,163,74,0.06)",
+        line=dict(color="#16a34a", width=1, dash="dot"),
+        name="Stability Zone (65)", hoverinfo="skip",
+    ))
+    fig_sv.add_trace(go.Scatterpolar(
+        r=[50] * n, theta=sv_cats, fill="toself",
+        fillcolor="rgba(234,88,12,0.05)",
+        line=dict(color="#ea580c", width=1, dash="dot"),
+        name="Outer Boundary (50)", hoverinfo="skip",
+    ))
+    fig_sv.add_trace(go.Scatterpolar(
+        r=sv_vals, theta=sv_cats, fill="toself",
+        fillcolor="rgba(139,92,246,0.15)",
+        line=dict(color="#8b5cf6", width=2),
+        name="Governance State",
+    ))
+    fig_sv.update_layout(
+        polar=dict(
+            bgcolor="rgba(15,23,42,0.8)",
+            radialaxis=dict(
+                visible=True, range=[0, 100],
+                tickfont=dict(color="#64748b", size=9),
+                gridcolor="rgba(255,255,255,0.07)",
+                linecolor="rgba(255,255,255,0.07)",
+            ),
+            angularaxis=dict(
+                tickfont=dict(color="#94a3b8", size=10),
+                gridcolor="rgba(255,255,255,0.07)",
+                linecolor="rgba(255,255,255,0.07)",
+            ),
+        ),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        showlegend=True,
+        legend=dict(font=dict(color="#94a3b8", size=10), bgcolor="rgba(0,0,0,0)"),
+        margin=dict(t=20, b=20, l=20, r=20),
+        height=320,
+    )
+    st.plotly_chart(fig_sv, use_container_width=True)
+
+with hz_chart_r:
+    st.markdown(
+        '<p style="color:#94a3b8;font-size:0.85rem;margin-bottom:4px;font-weight:600;">'
+        'Trust Horizon — Heuristic Estimate</p>',
+        unsafe_allow_html=True
+    )
+    fig_gauge = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=min(th_months, 24.0),
+        number=dict(suffix=" mo", font=dict(size=36, color=h_color)),
+        gauge=dict(
+            axis=dict(range=[0, 24], tickfont=dict(color="#64748b", size=9)),
+            bar=dict(color=h_color, thickness=0.35),
+            bgcolor="rgba(15,23,42,1)",
+            borderwidth=0,
+            steps=[
+                dict(range=[0,  1],  color="rgba(220,38,38,0.25)"),
+                dict(range=[1,  4],  color="rgba(234,88,12,0.2)"),
+                dict(range=[4,  9],  color="rgba(245,158,11,0.18)"),
+                dict(range=[9, 24],  color="rgba(22,163,74,0.15)"),
+            ],
+            threshold=dict(
+                line=dict(color="#16a34a", width=2),
+                thickness=0.75, value=9,
+            ),
+        ),
+        title=dict(text=horizon.trust_horizon.horizon_label,
+                   font=dict(color="#94a3b8", size=13)),
+    ))
+    fig_gauge.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#94a3b8"),
+        height=280,
+        margin=dict(t=60, b=10, l=40, r=40),
+    )
+    st.plotly_chart(fig_gauge, use_container_width=True)
+
+    st.markdown(
+        f'<div style="background:#0a0f1e;border:1px solid rgba(139,92,246,0.2);'
+        f'border-radius:10px;padding:14px 16px;">'
+        f'<div style="color:#a78bfa;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;'
+        f'margin-bottom:5px;">PRIMARY RISK FACTOR</div>'
+        f'<div style="color:#cbd5e1;font-size:0.85rem;line-height:1.4;">'
+        f'{horizon.trust_horizon.primary_risk_factor}</div>'
+        f'<div style="color:#334155;font-size:0.7rem;margin-top:6px;font-style:italic;">'
+        f'{horizon.trust_horizon.confidence}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+# ── GOVERNANCE TRAJECTORY ──────────────────────────────────────────────────────
+
+st.markdown(
+    '<p style="color:#94a3b8;font-size:0.85rem;margin:20px 0 8px 0;font-weight:600;">'
+    'Governance Trajectory</p>',
+    unsafe_allow_html=True
+)
+
+traj_c1, traj_c2, traj_c3, traj_c4 = st.columns(4)
+
+traj_items = [
+    ("Velocity",         f"{vel_sign}{vel:.2f}",  "composite pts / cycle",      d_color),
+    ("Acceleration",     f"{acc_sign}{acc:.2f}",  "velocity change / cycle",
+     "#16a34a" if acc >= 0 else "#f59e0b"),
+    ("Boundary Distance",
+     f"{'+' if horizon.boundary_distance >= 0 else ''}{horizon.boundary_distance:.1f}",
+     "pts from stability boundary",               m_color),
+    ("Top Drift Factor", top_factor,              "most degraded dimension",     "#8b5cf6"),
+]
+
+for col, (label, value, unit, color) in zip(
+    [traj_c1, traj_c2, traj_c3, traj_c4], traj_items
+):
+    with col:
+        st.markdown(
+            f'<div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;'
+            f'padding:16px;text-align:center;">'
+            f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;'
+            f'text-transform:uppercase;margin-bottom:8px;">{label}</div>'
+            f'<div style="color:{color};font-size:1.2rem;font-weight:800;">{value}</div>'
+            f'<div style="color:#64748b;font-size:0.72rem;margin-top:2px;">{unit}</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+# ── CORRECTIVE ACTIONS ─────────────────────────────────────────────────────────
+
+if horizon.corrective_actions:
+    st.markdown(
+        '<p style="color:#94a3b8;font-size:0.85rem;margin:20px 0 8px 0;font-weight:600;">'
+        'Horizon Corrective Actions</p>',
+        unsafe_allow_html=True
+    )
+    for action in horizon.corrective_actions:
+        ic = _HZ_IMPACT_COLORS.get(action.expected_impact, "#64748b")
+        st.markdown(
+            f'<div style="background:#0f172a;border-left:3px solid #8b5cf6;'
+            f'padding:14px 18px;border-radius:8px;margin-bottom:8px;">'
+            f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;">'
+            f'<span style="background:rgba(139,92,246,0.2);color:#a78bfa;font-weight:800;'
+            f'font-size:0.82rem;width:22px;height:22px;border-radius:50%;display:inline-flex;'
+            f'align-items:center;justify-content:center;flex-shrink:0;">{action.priority}</span>'
+            f'<span style="color:white;font-weight:600;font-size:0.9rem;">'
+            f'{action.display_dimension}</span>'
+            f'<span style="background:{ic}22;color:{ic};font-size:0.68rem;font-weight:700;'
+            f'padding:2px 8px;border-radius:999px;border:1px solid {ic}44;">'
+            f'{action.expected_impact}</span>'
+            f'</div>'
+            f'<div style="color:#94a3b8;font-size:0.85rem;padding-left:32px;">'
+            f'{action.action}</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
 st.markdown("---")
 
 st.markdown(
     '<p style="color:#334155;font-size:0.75rem;text-align:center;margin-top:8px;">'
-    'Treasurety Monitor™ — Continuous Drift Detection &amp; Assurance<br>'
+    'Treasurety Monitor™ — Continuous Drift Detection &amp; Assurance'
+    '&nbsp;&nbsp;·&nbsp;&nbsp;'
+    'Treasurety Horizon — Governance Stability &amp; Trust Horizon<br>'
     'Partner-ready · White-label capable · Signals feed Treasurety Govern policy engine'
     '</p>',
     unsafe_allow_html=True
