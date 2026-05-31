@@ -1034,6 +1034,85 @@ with hm_c5:
         unsafe_allow_html=True
     )
 
+# ── SECOND ROW: xi, Rentropy, GVM, V-total ────────────────────────────────────
+
+_HM_XI_COLORS = {
+    "STABLE":   "#16a34a",
+    "WATCH":    "#06b6d4",
+    "BOUNDARY": "#f59e0b",
+    "CHAOS":    "#dc2626",
+}
+_HM_GVM_COLORS = {
+    "POSITIVE": "#16a34a",
+    "MARGINAL": "#f59e0b",
+    "NEGATIVE": "#dc2626",
+}
+
+hm_r2c1, hm_r2c2, hm_r2c3, hm_r2c4 = st.columns(4)
+
+_xi_col   = _HM_XI_COLORS.get(hm.xi_label, "#64748b")
+_rent_col = _instability_color(hm.rentropy_score)
+_vtot_col = _instability_color(hm.v_total_score)
+_gvm_col  = _HM_GVM_COLORS.get(hm.gvm_label, "#64748b") if hm.gvm_label else "#64748b"
+_gvm_disp = f"{hm.gvm:+.1f}" if hm.gvm is not None else "N/A"
+_gvm_lbl  = hm.gvm_label or "No prior state"
+
+with hm_r2c1:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_xi_col}33;'
+        f'border-top:3px solid {_xi_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">COHERENCE-CHAOS RATIO</div>'
+        f'<div style="color:{_xi_col};font-size:1.8rem;font-weight:800;margin-bottom:4px;">'
+        f'&xi; {hm.xi:.3f}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">{hm.xi_label}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_r2c2:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_rent_col}33;'
+        f'border-top:3px solid {_rent_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">FAILURE ENTROPY</div>'
+        f'<div style="color:{_rent_col};font-size:2rem;font-weight:800;margin-bottom:4px;">'
+        f'{hm.rentropy_score:.0f}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">/ 100  spread index</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_r2c3:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_gvm_col}33;'
+        f'border-top:3px solid {_gvm_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">VELOCITY MARGIN</div>'
+        f'<div style="color:{_gvm_col};font-size:2rem;font-weight:800;margin-bottom:4px;">'
+        f'{_gvm_disp}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">{_gvm_lbl}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_r2c4:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_vtot_col}33;'
+        f'border-top:3px solid {_vtot_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">COMPOSITE STABILITY</div>'
+        f'<div style="color:{_vtot_col};font-size:2rem;font-weight:800;margin-bottom:4px;">'
+        f'{hm.v_total_score:.0f}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">/ 100  V-total index</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
 # Show active barriers if any
 if hm.active_barriers:
     st.markdown(
