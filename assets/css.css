@@ -253,14 +253,6 @@ h3 { color: #e2e8f0 !important; }
 [data-testid="stSidebarNav"]          { display: none !important; }
 [data-testid="stSidebarNavItems"]     { display: none !important; }
 
-/* ---- Home page_link (top-level, outside expanders) ---- */
-[data-testid="stSidebar"] > div > div[data-testid="stSidebarContent"] > div > [data-testid="stPageLink"] a,
-[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="stPageLink"] a {
-    padding: 7px 10px 7px 10px !important;
-    font-size: 0.86rem !important;
-    font-weight: 500 !important;
-}
-
 /* ---- Section expanders: strip card chrome ---- */
 [data-testid="stSidebar"] [data-testid="stExpander"] {
     background: transparent !important;
@@ -297,46 +289,52 @@ h3 { color: #e2e8f0 !important; }
     color: #c8d0db !important;
 }
 
-/* Expander content area — top-pad so first item doesn't crowd section header */
+/* Expander content area — small top-pad below section header */
 [data-testid="stSidebar"] [data-testid="stExpanderDetails"],
 [data-testid="stSidebar"] [data-testid="stExpander"] > div:last-child {
-    padding: 5px 0 4px 8px !important;
+    padding: 2px 0 2px 6px !important;
 }
 
-/* ---- page_link items inside expanders ---- */
+/* ---- page_link items ---- */
 [data-testid="stSidebar"] [data-testid="stPageLink"] {
     margin: 0 !important;
 }
 
-/* Inactive link — Treasurety light blue; target a + all text children to beat global sidebar rule */
-[data-testid="stSidebar"] [data-testid="stPageLink"] a,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a span,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a p,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a div {
+/* Anchor only: layout + color.
+   CRITICAL: do NOT add display/padding/border-left to child selectors (a span, a p, a div).
+   Putting layout on children creates stacked padded blocks (giant spacing) and
+   stacked border-left stripes (triple-line hover artifact). */
+[data-testid="stSidebar"] [data-testid="stPageLink"] a {
     display: block !important;
-    padding: 3px 8px 3px 10px !important;
+    padding: 4px 8px 4px 10px !important;
     border-radius: 5px !important;
     color: #90d3ff !important;
-    font-size: 0.83rem !important;
+    font-size: 0.86rem !important;
     font-weight: 400 !important;
     text-decoration: none !important;
     transition: background 0.12s, color 0.12s !important;
     border-left: 2px solid transparent !important;
-    line-height: 1.4 !important;
+    line-height: 1.35 !important;
+    text-align: left !important;
 }
 
-[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover span,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover p {
+/* Children: color only — inherited from anchor.
+   This beats the global sidebar override without introducing layout side-effects. */
+[data-testid="stSidebar"] [data-testid="stPageLink"] a span,
+[data-testid="stSidebar"] [data-testid="stPageLink"] a p,
+[data-testid="stSidebar"] [data-testid="stPageLink"] a div {
+    color: inherit !important;
+}
+
+/* Hover — anchor only, one clean accent line */
+[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover {
     background: rgba(144,211,255,0.07) !important;
     color: #b5e0ff !important;
     border-left-color: rgba(144,211,255,0.35) !important;
 }
 
-/* Active page — brighter highlight */
-[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"],
-[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] span,
-[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] p {
+/* Active page */
+[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] {
     background: rgba(144,211,255,0.12) !important;
     color: #ffffff !important;
     font-weight: 600 !important;

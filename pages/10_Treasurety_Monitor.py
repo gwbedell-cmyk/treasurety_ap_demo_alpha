@@ -231,7 +231,7 @@ def recommend_modules(s, verdict):
     if s["ecosystem_drift"] >= 45 or s["trust_drift"] >= 45:
         modules.append(("Treasurety Shield", "Adversarial protection and trust boundary enforcement.", "#dc2626"))
     if verdict in ("ELEVATED RISK", "INTERVENTION RECOMMENDED", "RESTRICT EXECUTION"):
-        modules.append(("Treasurety Assess", "Re-run pre-deployment readiness evaluation.", "#8b5cf6"))
+        modules.append(("Treasurety Assess", "Re-run pre-deployment readiness evaluation.", "#90d3ff"))
     if s["policy_drift"] >= 45 or s["intervention_drift"] >= 45:
         modules.append(("Treasurety Govern", "Tighten runtime policy enforcement and execution controls.", "#3b82f6"))
     return modules
@@ -431,10 +431,10 @@ st.markdown("---")
 st.markdown("#### Active Alerts")
 
 ALERT_STYLES = {
-    "INFO":     ("#1e3a5f", "#93c5fd"),
-    "WATCH":    ("#1c2d1c", "#86efac"),
-    "WARNING":  ("#3d2a00", "#fcd34d"),
-    "CRITICAL": ("#3b0a0a", "#fca5a5"),
+    "INFO":     ("#0f172a", "#93c5fd"),
+    "WATCH":    ("#0f172a", "#86efac"),
+    "WARNING":  ("#0f172a", "#fcd34d"),
+    "CRITICAL": ("#0f172a", "#fca5a5"),
 }
 
 for severity, message in alerts:
@@ -559,11 +559,11 @@ with exec_right:
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
-    '<div style="background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.05));'
-    'border:1px solid rgba(99,102,241,0.25);border-radius:16px;padding:28px 32px;margin-bottom:8px;">'
+    '<div style="background:linear-gradient(135deg,rgba(10,15,30,1.0),rgba(15,23,42,1.0));'
+    'border:1px solid rgba(144,211,255,0.2);border-radius:16px;padding:28px 32px;margin-bottom:8px;">'
     '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;">'
     '<div style="flex:1;min-width:280px;">'
-    '<div style="color:#a5b4fc;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;'
+    '<div style="color:#90d3ff;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;'
     'text-transform:uppercase;margin-bottom:8px;">TREASURETY HORIZON</div>'
     '<div style="color:white;font-size:1.3rem;font-weight:700;margin-bottom:8px;">'
     'Governance Forecasting &amp; Trust Horizon Intelligence</div>'
@@ -575,8 +575,8 @@ st.markdown(
     '</div>'
     '<div style="flex-shrink:0;padding-top:4px;">'
     '<a href="/Treasurety_Horizon" target="_self" style="display:inline-block;'
-    'background:rgba(99,102,241,0.2);color:#a5b4fc;font-weight:700;font-size:0.85rem;'
-    'padding:10px 22px;border-radius:8px;border:1px solid rgba(99,102,241,0.4);'
+    'background:rgba(144,211,255,0.1);color:#90d3ff;font-weight:700;font-size:0.85rem;'
+    'padding:10px 22px;border-radius:8px;border:1px solid rgba(144,211,255,0.3);'
     'text-decoration:none;letter-spacing:0.04em;">Open Horizon &rarr;</a>'
     '</div>'
     '</div>'
