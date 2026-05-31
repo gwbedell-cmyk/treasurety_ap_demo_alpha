@@ -2,6 +2,8 @@ import streamlit as st
 import plotly.graph_objects as go
 from services import branding
 from services.horizon import evaluate_horizon_from_monitor_scenario
+from services.horizon.state_vector import from_monitor_scenario
+from services.horizon_math import compute_horizon_math
 
 st.set_page_config(layout="wide")
 
@@ -299,7 +301,15 @@ verdict, verdict_color, verdict_desc = assurance_verdict(drift_risk, s["governan
 alerts  = generate_alerts(s)
 recs    = generate_recommendations(s, verdict)
 modules = recommend_modules(s, verdict)
-horizon = evaluate_horizon_from_monitor_scenario(s, _make_previous_scenario(s))
+horizon     = evaluate_horizon_from_monitor_scenario(s, _make_previous_scenario(s))
+_prev_scen  = _make_previous_scenario(s)
+_prev_sv    = from_monitor_scenario(_prev_scen) if _prev_scen is not None else None
+hm          = compute_horizon_math(
+    state                     = horizon.state_vector,
+    previous_state            = _prev_sv,
+    base_trust_horizon_months = horizon.trust_horizon_months,
+    drift_direction           = horizon.drift.drift_direction,
+)
 
 st.markdown(
     f'<div style="background:#0f172a;border-left:4px solid #06b6d4;padding:14px 18px;border-radius:8px;margin-bottom:20px;color:#94a3b8;font-size:0.88rem;">'
@@ -884,6 +894,176 @@ if horizon.corrective_actions:
             f'</div>'
             f'<div style="color:#94a3b8;font-size:0.85rem;padding-left:32px;">'
             f'{action.action}</div>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+# ── MODULE 9: HORIZON MATHEMATICAL STABILITY LAYER ───────────────────────────
+
+st.markdown(
+    '<div style="display:flex;align-items:center;gap:16px;margin:28px 0 16px 0;">'
+    '<div style="flex:1;height:1px;background:linear-gradient(to right,'
+    'rgba(139,92,246,0.3),transparent);"></div>'
+    '<span style="background:rgba(139,92,246,0.1);color:#a78bfa;font-size:0.68rem;'
+    'font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 16px;'
+    'border-radius:999px;border:1px solid rgba(139,92,246,0.25);">'
+    'MATHEMATICAL STABILITY LAYER</span>'
+    '<div style="flex:1;height:1px;background:linear-gradient(to left,'
+    'rgba(139,92,246,0.3),transparent);"></div>'
+    '</div>',
+    unsafe_allow_html=True
+)
+st.markdown("##### Horizon Mathematical Stability Indicators")
+st.caption(
+    "Treasurety Horizon uses heuristic mathematical stability indicators "
+    "pending longitudinal calibration."
+)
+
+_HM_BARRIER_COLORS = {
+    "CLEAR":               "#16a34a",
+    "WARNING":             "#f59e0b",
+    "HARD_BARRIER_ACTIVE": "#dc2626",
+}
+_HM_RESONANCE_COLORS = {
+    "LOW":      "#16a34a",
+    "ELEVATED": "#f59e0b",
+    "HIGH":     "#ea580c",
+    "CRITICAL": "#dc2626",
+}
+_HM_CED_COLORS = {
+    "LOW":      "#16a34a",
+    "WATCH":    "#06b6d4",
+    "ELEVATED": "#f59e0b",
+    "CRITICAL": "#dc2626",
+}
+_HM_CONF_COLORS = {
+    "HIGH":     "#16a34a",
+    "MODERATE": "#f59e0b",
+    "LOW":      "#dc2626",
+}
+
+def _instability_color(score: float) -> str:
+    if score < 15: return "#16a34a"
+    if score < 35: return "#f59e0b"
+    if score < 60: return "#ea580c"
+    return "#dc2626"
+
+hm_c1, hm_c2, hm_c3, hm_c4, hm_c5 = st.columns(5)
+
+_inst_col = _instability_color(hm.instability_score)
+_bar_col  = _HM_BARRIER_COLORS.get(hm.barrier_status, "#64748b")
+_res_col  = _HM_RESONANCE_COLORS.get(hm.resonance_label, "#64748b")
+_ced_col  = _HM_CED_COLORS.get(hm.ced_label, "#64748b")
+_conf_col = _HM_CONF_COLORS.get(hm.trust_horizon_confidence, "#64748b")
+
+_barrier_display = hm.barrier_status.replace("_", " ")
+_barrier_detail  = (
+    f"{len(hm.active_barriers)} active {'barrier' if len(hm.active_barriers) == 1 else 'barriers'}"
+    if hm.active_barriers else "All boundaries nominal"
+)
+_adj_display = f"{hm.adjusted_trust_horizon_months:.1f} mo"
+
+with hm_c1:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_inst_col}33;'
+        f'border-top:3px solid {_inst_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">HORIZON INSTABILITY</div>'
+        f'<div style="color:{_inst_col};font-size:2rem;font-weight:800;margin-bottom:4px;">'
+        f'{hm.instability_score:.0f}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">/ 100  posture risk</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_c2:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_bar_col}33;'
+        f'border-top:3px solid {_bar_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">BOUNDARY CONDITION</div>'
+        f'<div style="color:{_bar_col};font-size:0.95rem;font-weight:800;margin-bottom:4px;">'
+        f'{_barrier_display}</div>'
+        f'<div style="color:#64748b;font-size:0.7rem;line-height:1.4;">{_barrier_detail}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_c3:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_res_col}33;'
+        f'border-top:3px solid {_res_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">RESONANCE PRESSURE</div>'
+        f'<div style="color:{_res_col};font-size:1.4rem;font-weight:800;margin-bottom:4px;">'
+        f'{hm.resonance_label}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">{hm.resonance_score:.0f} / 100</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_c4:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_ced_col}33;'
+        f'border-top:3px solid {_ced_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">COHERENCE EXHAUSTION</div>'
+        f'<div style="color:{_ced_col};font-size:1.4rem;font-weight:800;margin-bottom:4px;">'
+        f'{hm.ced_label}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">CED index: {hm.ced:.3f}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+with hm_c5:
+    st.markdown(
+        f'<div style="background:#0f172a;border:1px solid {_conf_col}33;'
+        f'border-top:3px solid {_conf_col};border-radius:12px;padding:18px;'
+        f'text-align:center;min-height:110px;">'
+        f'<div style="color:#64748b;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;'
+        f'text-transform:uppercase;margin-bottom:8px;">TRUST HORIZON (ADJ.)</div>'
+        f'<div style="color:{_conf_col};font-size:1.8rem;font-weight:800;margin-bottom:4px;">'
+        f'{_adj_display}</div>'
+        f'<div style="color:#64748b;font-size:0.72rem;">'
+        f'Confidence: {hm.trust_horizon_confidence}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+# Show active barriers if any
+if hm.active_barriers:
+    st.markdown(
+        '<p style="color:#94a3b8;font-size:0.78rem;margin:14px 0 4px 0;">'
+        'Active Boundary Conditions</p>',
+        unsafe_allow_html=True
+    )
+    for barrier in hm.active_barriers:
+        st.markdown(
+            f'<div style="background:#1a0a0a;border-left:3px solid #dc2626;'
+            f'padding:8px 14px;border-radius:6px;margin-bottom:4px;">'
+            f'<span style="color:#fca5a5;font-size:0.82rem;">{barrier}</span>'
+            f'</div>',
+            unsafe_allow_html=True
+        )
+
+# Show trust horizon adjustments if any were applied
+_non_default = [a for a in hm.trust_horizon_adjustments
+                if a != "No adjustments applied -- base estimate preserved"]
+if _non_default:
+    st.markdown(
+        '<p style="color:#94a3b8;font-size:0.78rem;margin:12px 0 4px 0;">'
+        'Trust Horizon Adjustments Applied</p>',
+        unsafe_allow_html=True
+    )
+    for adj in hm.trust_horizon_adjustments:
+        st.markdown(
+            f'<div style="background:#0a0a18;border-left:2px solid rgba(139,92,246,0.4);'
+            f'padding:6px 14px;border-radius:4px;margin-bottom:4px;">'
+            f'<span style="color:#a78bfa;font-size:0.8rem;">{adj}</span>'
             f'</div>',
             unsafe_allow_html=True
         )
