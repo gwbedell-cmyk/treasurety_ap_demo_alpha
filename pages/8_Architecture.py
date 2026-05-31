@@ -8,7 +8,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-branding.sidebar_logo()
+branding.sidebar_nav()
 
 st.title("Treasurety Runtime Architecture")
 st.caption("Trust infrastructure for autonomous execution — governance model")

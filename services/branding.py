@@ -58,3 +58,48 @@ def page_favicon():
         return img.crop((0, 0, h, h))
     except Exception:
         return "🛡️"
+
+
+# -- SECTIONED SIDEBAR NAVIGATION ------------------------------------------
+
+_NAV_SECTIONS = [
+    ("Assessment & Certification", False, [
+        ("pages/2_Treasurety_Gate.py",       "Treasurety Gate"),
+        ("pages/9_Treasurety_Assess.py",      "Trust Assessment"),
+    ]),
+    ("Runtime Governance", True, [
+        ("pages/10_Treasurety_Monitor.py",    "Treasurety Monitor"),
+        ("pages/11_Treasurety_Horizon.py",    "Treasurety Horizon"),
+        ("pages/12_Treasurety_Shield.py",     "Treasurety Shield"),
+    ]),
+    ("Trust Infrastructure", False, [
+        ("pages/6_Policy_Control_Center.py",  "Policy Control Center"),
+    ]),
+    ("Operations", False, [
+        ("pages/0_Dashboard.py",              "Dashboard"),
+        ("pages/3_Autonomous_Queue.py",       "Autonomous Queue"),
+        ("pages/4_Decision_Analysis.py",      "Decision Analysis"),
+        ("pages/5_Black_Box_Recorder.py",     "Decision Provenance"),
+    ]),
+    ("Platform", False, [
+        ("pages/1_AI_Native_Flow.py",         "AI Native Flow"),
+        ("pages/7_Scenario_Control.py",       "Scenario Control"),
+        ("pages/8_Architecture.py",           "Architecture"),
+        ("pages/13_Platform_Roadmap.py",      "Platform Roadmap"),
+    ]),
+]
+
+
+def sidebar_nav() -> None:
+    """
+    Render logo + sectioned expandable navigation in the sidebar.
+    Replaces sidebar_logo() -- call once per page after load_css().
+    """
+    sidebar_logo()
+    with st.sidebar:
+        st.page_link("app.py", label="Home", icon=":material/home:")
+        st.markdown('<div class="nav-divider"></div>', unsafe_allow_html=True)
+        for section_label, expanded, pages in _NAV_SECTIONS:
+            with st.expander(section_label, expanded=expanded):
+                for page_path, page_label in pages:
+                    st.page_link(page_path, label=page_label)

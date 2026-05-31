@@ -246,3 +246,97 @@ h3 { color: #e2e8f0 !important; }
 [data-testid="stSidebarHeader"] {
     padding: 20px 16px 12px 16px !important;
 }
+
+/* ── SIDEBAR SECTIONED NAV ────────────────────────────────────────────── */
+
+/* Hide native auto-nav entirely (safety guard; config sets showSidebarNavigation=false) */
+[data-testid="stSidebarNav"]          { display: none !important; }
+[data-testid="stSidebarNavItems"]     { display: none !important; }
+
+/* ---- Home page_link (top-level, outside expanders) ---- */
+[data-testid="stSidebar"] > div > div[data-testid="stSidebarContent"] > div > [data-testid="stPageLink"] a,
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] > [data-testid="stPageLink"] a {
+    padding: 7px 10px 7px 10px !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+}
+
+/* ---- Section expanders: strip card chrome ---- */
+[data-testid="stSidebar"] [data-testid="stExpander"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 1px 0 !important;
+    padding: 0 !important;
+}
+
+/* Section header button/summary */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary,
+[data-testid="stSidebar"] [data-testid="stExpander"] button[data-testid="stExpanderToggleButton"] {
+    padding: 5px 4px !important;
+    border-radius: 4px !important;
+    min-height: unset !important;
+    background: transparent !important;
+}
+
+/* Section header label text */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary p,
+[data-testid="stSidebar"] [data-testid="stExpander"] summary span,
+[data-testid="stSidebar"] [data-testid="stExpander"] [data-testid="stExpanderToggleButton"] p,
+[data-testid="stSidebar"] [data-testid="stExpander"] [data-testid="stExpanderToggleButton"] span {
+    font-size: 0.70rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.11em !important;
+    text-transform: uppercase !important;
+    color: #475569 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] summary:hover p,
+[data-testid="stSidebar"] [data-testid="stExpander"] summary:hover span {
+    color: #64748b !important;
+}
+
+/* Expander content area */
+[data-testid="stSidebar"] [data-testid="stExpanderDetails"],
+[data-testid="stSidebar"] [data-testid="stExpander"] > div:last-child {
+    padding: 0 0 4px 6px !important;
+}
+
+/* ---- page_link items inside expanders ---- */
+[data-testid="stSidebar"] [data-testid="stPageLink"] {
+    margin: 0 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] a {
+    display: block !important;
+    padding: 5px 8px 5px 10px !important;
+    border-radius: 5px !important;
+    color: #64748b !important;
+    font-size: 0.83rem !important;
+    font-weight: 400 !important;
+    text-decoration: none !important;
+    transition: background 0.12s, color 0.12s !important;
+    border-left: 2px solid transparent !important;
+    line-height: 1.4 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] a:hover {
+    background: rgba(59,130,246,0.08) !important;
+    color: #93c5fd !important;
+    border-left-color: rgba(59,130,246,0.35) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] {
+    background: rgba(59,130,246,0.12) !important;
+    color: #7dd3fc !important;
+    font-weight: 600 !important;
+    border-left-color: #3b82f6 !important;
+}
+
+/* Divider between Home and sections */
+.nav-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 6px 0 8px 0;
+}

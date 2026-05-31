@@ -12,7 +12,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-branding.sidebar_logo()
+branding.sidebar_nav()
 
 # ── HERO ──────────────────────────────────────────────────────────────────────
 logo_tag = branding.logo_html(width=320, extra_style="margin:14px 0 6px 0;")

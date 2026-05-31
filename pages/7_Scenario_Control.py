@@ -10,7 +10,7 @@ def load_css():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css()
-branding.sidebar_logo()
+branding.sidebar_nav()
 
 with open("data/scenarios.json") as f:
     all_scenarios = json.load(f)
